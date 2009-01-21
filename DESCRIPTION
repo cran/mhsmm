@@ -2,7 +2,7 @@ Package: mhsmm
 Type: Package
 Title: Parameter estimation and prediction for hidden Markov and
         semi-Markov models for data with multiple observation sequences
-Version: 0.2.1
+Version: 0.2.3
 Date: 2009-01-21
 Author: Jared O'Connell <jared.oconnell@ferring.com>, Soren Hojsgaard
         <sorenh@agrsci.dk>
@@ -21,6 +21,6 @@ Description: Parameter estimation and prediction for hidden Markov and
 License: GPL (>= 2)
 LazyLoad: yes
 Depends: mvtnorm
-Packaged: 2009-04-04 06:43:38 UTC; jared
+Packaged: 2009-04-05 10:16:51 UTC; jared
 Repository: CRAN
-Date/Publication: 2009-04-04 20:41:15
+Date/Publication: 2009-04-14 17:32:17

@@ -131,7 +131,7 @@ predict.hmm <- function(object,x,method="viterbi",...) {
          state[(NN[i]+1):NN[i+1]] = .C("viterbi_hmm",a=logtrans,pi=logpi,p=as.double(log(t(p[(NN[i]+1):NN[i+1],]))),N=as.integer(x$N[i]),NN=as.integer(nseq),K=as.integer(object$K),
                 q=as.integer(rep(-1,x$N[i])),PACKAGE='mhsmm')$q+1
     }
-    ans <- list(s=state,x=x,N=length(x))
+    ans <- list(s=state,x=x$x,N=x$N)
   }
   else if(method=="smoothed") {
     tmp <- hmmfit(x,object$model,object$f,object$mstep,maxit=1)
