@@ -1,3 +1,9 @@
 2009-03-02 Søren Højsgaard <sorenh@agrsci.dk>
 
 	* mhsmm package version 0.1.0 submitted to CRAN
+
+2009-03-31 Jared O'Connell <jared.oconnell@ferring.com>
+	
+	* changed hmm and hsmm to hmmfit and hsmmfit respectively
+	* added 'smoothed' method to predict.hmm and predict.hsmm
+	

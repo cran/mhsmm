@@ -1,11 +1,11 @@
-\name{hmm}
-\alias{hmm}
-\title{hidden Markov model}
+\name{hmmfit}
+\alias{hmmfit}
+\title{fit a hidden Markov model}
 \description{
   Estimates parameters of a HMM using the EM algorithm.
 }
 \usage{
-hmm(x,start.val,f=dnorm.hsmm,mstep=mstep.norm,tol=1e-08,maxit=1000) 
+hmmfit(x,start.val,f=dnorm.hsmm,mstep=mstep.norm,tol=1e-08,maxit=1000) 
 }
 \arguments{
   \item{x}{A hsmm.data object (see Details)}
@@ -39,9 +39,17 @@ init0 <- rep(1/J,J)
 P0 <- matrix(1/J,nrow=J,ncol=J)
 b0 <- list(mu=c(-3,1,3),sigma=c(1,1,1))
 startval <- hmmspec(init=init0, trans=P0,emission=b0) 
-h1 = hmm(train,startval,f=dnorm.hsmm,mstep=mstep.norm)
+h1 = hmmfit(train,startval,f=dnorm.hsmm,mstep=mstep.norm)
 
 plot(h1$loglik,type='b',ylab='Log-likelihood',xlab='Iteration')
 summary(h1)
+
+#proportion of incorrect states
+mean(train$s!=predict(h1,train)$s)
+
+#simulate a new test set 
+test <- simulate(model, nsim=c(100,200,300), seed=1234)
+mean(test$s!=predict(h1,test)$s)
+
 }
 

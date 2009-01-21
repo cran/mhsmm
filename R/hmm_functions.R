@@ -57,7 +57,7 @@ print.hmm <- function(x, ...) {
  return(invisible(x))
 }
 
-hmm <- function(x,start.val,f=dnorm.hsmm,mstep=mstep.norm,tol=1e-08,maxit=1000) 
+hmmfit <- function(x,start.val,f=dnorm.hsmm,mstep=mstep.norm,tol=1e-08,maxit=1000) 
 {
   model = start.val
   K = nrow(model$trans)
@@ -96,27 +96,48 @@ hmm <- function(x,start.val,f=dnorm.hsmm,mstep=mstep.norm,tol=1e-08,maxit=1000)
     model$transition=matrix(test$a,nrow=K,byrow=TRUE)
     model$init=test$pi
   }  
-  ret = list(model=model,K=K,f=f,gam=gam,loglik=loglik[!is.na(loglik)],N=N,p=p)
+  ret = list(model=model,K=K,f=f,mstep=mstep,gam=gam,loglik=loglik[!is.na(loglik)],N=N,p=gam,yhat=apply(gam,1,which.max))
   class(ret) <- "hmm"
   return(ret)	
 }
 
 
-predict.hmm <- function(object,x,...) {
-  nseq=1
+predict.hmm <- function(object,x,method="viterbi",...) {
+  nseq=1  
+  if(class(x)=="numeric" | class(x)=="integer") {
+  	warning('x is a primitive vector.  Assuming single sequence.')
+  	N = NROW(x)
+  	NN = c(0,N)
+  	if(N<1) stop("N less than one")
+  }
+  else{
+  	N = x$N
+  	NN = cumsum(c(0,x$N))
+  	x0 = x$x
+  }
 #   state = integer(obj
-  K = object$K
-  p = sapply(1:K,fn <- function(state) object$f(x,state,object$model))
-  p[p==0]= 1e-200
-  tmp = object$model$trans
-  tmp[!tmp>0] =  1e-200
-  logtrans = as.double(log(t(tmp)))
-  tmp = object$model$init
-  tmp[!tmp>0] =  1e-20
-  logpi = as.double(log(t(tmp)))
- 	state = .C("viterbi_hmm",a=logtrans,pi=logpi,p=as.double(log(t(p))),N=as.integer(NROW(x)),NN=as.integer(nseq),K=as.integer(object$K),
-              q=as.integer(rep(-1,sum(NROW(x)))),PACKAGE='mhsmm')$q+1
-  ans <- list(s=state,x=x,N=length(x))
+  if(method=="viterbi") {
+    K = object$K
+    p = sapply(1:K,fn <- function(state) object$f(x$x,state,object$model))
+    p[p==0]= 1e-200
+    tmp = object$model$trans
+    tmp[!tmp>0] =  1e-200
+    logtrans = as.double(log(t(tmp)))
+    tmp = object$model$init
+    tmp[!tmp>0] =  1e-20
+    logpi = as.double(log(t(tmp)))
+    state = integer(sum(x$N))
+    for(i in 1:length(x$N)) {    
+         state[(NN[i]+1):NN[i+1]] = .C("viterbi_hmm",a=logtrans,pi=logpi,p=as.double(log(t(p[(NN[i]+1):NN[i+1],]))),N=as.integer(x$N[i]),NN=as.integer(nseq),K=as.integer(object$K),
+                q=as.integer(rep(-1,x$N[i])),PACKAGE='mhsmm')$q+1
+    }
+    ans <- list(s=state,x=x,N=length(x))
+  }
+  else if(method=="smoothed") {
+    tmp <- hmmfit(x,object$model,object$f,object$mstep,maxit=1)
+    ans <- list(s=tmp$yhat,x=x$x,N=x$N,p=tmp$p)
+  }
+  else stop("Unavailable prediction method")
   class(ans) <- "hsmm.data"
   ans
 #  void viterbi(double *a,double *start,double *p,int *T,int *nsequences,int *nstates,int *q) {

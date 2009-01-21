@@ -1,9 +1,9 @@
 \name{reprocows}
 \docType{data}
 \alias{reprocows}
-\title{Reproductive data from seven dairy reprocows}
+\title{Reproductive data from seven dairy cows}
 \description{
-  This data set contains hourly observations on progesterone and an activity index at hourly intervals since calving on seven dairy reprocows.  
+  This data set contains hourly observations on progesterone and an activity index at hourly intervals since calving on seven dairy cows.  
 }
 \usage{reprocows}
 \format{\code{reprocows} is a data frame containing 13040 rows. 

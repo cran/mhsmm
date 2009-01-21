@@ -1,3 +1,17 @@
+print.hsmmspec <- function(x, ...){
+  cat("Hidden semi-Markov Model specification:\n")
+  cat(sprintf("J (number of states): \n%i \n", x$J))
+  cat("init:\n")
+  print(x$init)
+  cat ("transition matrix:\n")
+  print(x$transition)
+  cat("emission distribution:\n")
+  print(x$emission)
+  cat("sojourn distribution:\n")
+  print(x$sojourn)
+  return(invisible(x))
+}
+
 .fitnbinom <- function(eta) {  
   shiftthresh=1e-20
   maxshift =  match(TRUE,eta>shiftthresh)
@@ -54,7 +68,8 @@ hsmmspec <- function(init,transition,emission,sojourn,r=rnorm.hsmm) {
   if(length(init)!=NROW(transition))    stop('length(init)!=NROW(transition)')
   if(NROW(transition)!=NCOL(transition)) stop('NROW(transition)!=NCOL(transition)')
   if(!isTRUE(all.equal(sum(diag(matrix(c(0,.1,.4,.5,0,.6,.5,.9,0),nrow=3))),0))) stop('non-zero entry on diagonal of transition matrix')
-  
+  if(is.null(sojourn$type)) stop("Sojourn distribution type not specified.")
+  if(all(sojourn$type!=c("nonparametric","gamma","poisson"))) stop(paste("Invalid sojourn type specified (",sojourn$type,")"))
   ans = list(J=length(init),init=init,transition=transition,emission=emission,sojourn=sojourn,r=r)
   class(ans) <- 'hsmmspec'
   ans  
@@ -111,7 +126,6 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,...)
     .sim.mhsmm(nsim,object,object$sojourn$type,object$r)
   }
 }
-
 
 #simulate a multisequence hsmm
 .sim.mhsmm <- function(N,model,sojourn.distribution="nonparametric",emission=rnorm.hsmm,left.truncate=0,right.truncate=0,M=10000)
@@ -240,7 +254,9 @@ plot.hsmm.data <- function(x,...) {
   else dpois(x-shift,lambda)
 }
 
-hsmm <- function(x,model,f,mstep,maxit=100,sojourn.distribution=c("nonparametric","gamma","poisson"),lock.transition=FALSE,lock.d=FALSE,M=NA,graphical=FALSE) { #fit a hsmm to x
+#hsmm <- function(x,model,f,mstep,maxit=100,sojourn.distribution=c("nonparametric","gamma","poisson"),lock.transition=FALSE,lock.d=FALSE,M=NA,graphical=FALSE) { #fit a hsmm to x
+hsmmfit <- function(x,model,f,mstep,maxit=100,lock.transition=FALSE,lock.d=FALSE,M=NA,graphical=FALSE) { #fit a hsmm to x
+  sojourn.distribution=model$sojourn$type
   tol=1e-4
 	ksmooth.thresh = 1e-20 #this is a threshold for which d(u) values to use - if we throw too many weights in the default density() seems to work quite poorly
   shiftthresh = 1e-20 #threshold for effective "0" when considering d(u)
@@ -338,6 +354,7 @@ hsmm <- function(x,model,f,mstep,maxit=100,sojourn.distribution=c("nonparametric
     if(any(is.na(p))) stop("NAs detected in b(x), check your supplied density function")
     
 #    print(paste("Iteration",it))
+# E-STEP
     B  = .C("backward",
           transition=as.double(new.model$transition),
           init=as.double(new.model$init),
@@ -356,6 +373,8 @@ hsmm <- function(x,model,f,mstep,maxit=100,sojourn.distribution=c("nonparametric
           totallength=NROW(x),
           G=double(J*NROW(x)),
           PACKAGE='mhsmm')
+
+#M-Step
 
 #    N.debug[[it]] = B$N
     if(any(is.nan(B$gamma))) {
@@ -471,7 +490,7 @@ hsmm <- function(x,model,f,mstep,maxit=100,sojourn.distribution=c("nonparametric
      if(it>2) if(abs(ll[it]-ll[it-1])<tol) break()
   }
   new.model$sojourn$type = sojourn.distribution
-  ret = list(loglik=ll[!is.na(ll)],model=new.model,B=B,M=M,J=J,NN=NN,f=f,yhat=apply(matrix(B$gamma,ncol=J),1,which.max))#,N.debug=N.debug)
+  ret = list(loglik=ll[!is.na(ll)],model=new.model,B=B,M=M,J=J,NN=NN,f=f,mstep=mstep,yhat=apply(matrix(B$gamma,ncol=J),1,which.max))#,N.debug=N.debug)
   class(ret) <- "hsmm"
   ret
 }
@@ -498,7 +517,7 @@ predict.hsmm <- function(object,x,method="viterbi",...) {
   else{
   	N = x$N
   	NN = cumsum(c(0,x$N))
-  	x = x$x
+  	x0 = x$x
   }
   statehat = integer(NROW(x))
   statehat=NA
@@ -515,8 +534,8 @@ predict.hsmm <- function(object,x,method="viterbi",...) {
     D = log(D)
     D[D==-Inf]=m    
   for(i in 1:length(N)) {
-    if(NCOL(x)==1)    b = log(unlist(sapply(1:J,function(state) object$f(x[(NN[i]+1):NN[i+1]],state,object$model))))
-    else    b = log(unlist(sapply(1:J,function(state) object$f(x[(NN[i]+1):NN[i+1],],state,object$model))))
+    if(NCOL(x)==1)    b = log(unlist(sapply(1:J,function(state) object$f(x0[(NN[i]+1):NN[i+1]],state,object$model))))
+    else    b = log(unlist(sapply(1:J,function(state) object$f(x0[(NN[i]+1):NN[i+1],],state,object$model))))
     b[b==-Inf]=m
     tmp = .C("viterbi",
                 a=loga,
@@ -534,9 +553,14 @@ predict.hsmm <- function(object,x,method="viterbi",...) {
                 ,PACKAGE='mhsmm')    
     statehat[(NN[i]+1):NN[i+1]] = tmp$statehat+1
   }
- } 
-  else stop(paste("Unavailable prediction method",method))
   ans <- list(x=x,s=statehat,N=N)
+ }
+ else if(method=="smoothed") {    
+    tmp <- hsmmfit(x,object$model,object$f,object$mstep,maxit=1,M=object$M)
+    ans <- list(x=x$x,s=tmp$yhat,N=x$N,p=matrix(tmp$B$gamma,ncol=object$J))
+  }
+  else stop(paste("Unavailable prediction method",method))
+    
   class(ans) <- 'hsmm.data'  
   ans
 # tmp

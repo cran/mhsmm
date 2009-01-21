@@ -3,7 +3,7 @@
 \alias{reproai}
 \title{Artificial insemination times for seven cows}
 \description{
-  This is an auxilliary data set to the \code{cows} data set contreproaining times of artificial insemination for respective cows.  
+  This is an auxilliary data set to the \code{cows} data set containing times of artificial insemination for respective cows.  
   Only the day of insemination was recorded so time of day is always midday.
 }
 \usage{reproai}

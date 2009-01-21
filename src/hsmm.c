@@ -1076,10 +1076,7 @@ void viterbi_hmm(double *a,double *start,double *p,int *T,int *nsequences,int *n
 	int maxind;
 	int *ii = (int *)malloc((N+1)*sizeof(int));
 
-
 //	Rprintf("%d %d %d\n",K,N,*T);
-
-
 	checkmem(ii);
 
 	ii[0]=0;
