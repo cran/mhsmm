@@ -2,8 +2,14 @@
 
 	* mhsmm package version 0.1.0 submitted to CRAN
 
-2009-03-31 Jared O'Connell <jared.oconnell@ferring.com>
+2009-03-31 Jared O'Connell <jared@graduate.uwa.edu.au>
 	
 	* changed hmm and hsmm to hmmfit and hsmmfit respectively
 	* added 'smoothed' method to predict.hmm and predict.hsmm
+
+2009-03-31 Jared O'Connell <jared@graduate.uwa.edu.au>
+  
+  * some arguments for hsmmfit, hsmmspec, predict.hsmmspec as well as the respective HMM functions have been altered giving them a more sensible structure
+  * added a "lock.transition" argument to hmmfit
+  * 
 	

@@ -1,13 +1,13 @@
-\name{dnorm.hsmm}
-\alias{dnorm.hsmm}
+\name{dpois.hsmm}
+\alias{dpois.hsmm}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Emission density function for normal emission distribution }
+\title{ Emission density function for Poisson emission distribution }
 \description{
   Calculates the density of observations \code{x} for state \code{j} given the parameters in \code{model}.  This is used for
-  the Gaussian emission distribution of a HMM or HSMM and is a suitable prototype for user's to make their own custom distributions.
+  a Poisson emission distribution of a HMM or HSMM and is a suitable prototype for user's to make their own custom distributions.
 }
 \usage{
-dnorm.hsmm(x, j, model)
+dpois.hsmm(x, j, model)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,4 +22,18 @@ dnorm.hsmm(x, j, model)
 \value{
   A vector of probability densities.
 }
+
+\seealso{ \code{mstep.pois}, \code{rpois.hsmm}}
+
 \author{Jared O'Connell}
+\examples{
+  J<-3
+  initial <- rep(1/J,J)
+  P <- matrix(c(.8,.5,.1,0.05,.2,.5,.15,.3,.4),nrow=J)
+  b <- list(lambda=c(1,3,6))
+  model <- hmmspec(init=initial, trans=P, emission=b,f=dpois.hsmm)
+  model
+  train <- simulate(model, nsim=300, seed=1234, r=rpois.hsmm)
+  plot(train,xlim=c(0,100))  
+  h1 = hmmfit(train,model,mstep=mstep.pois)
+}

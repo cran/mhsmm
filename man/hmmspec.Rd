@@ -6,15 +6,17 @@
   Creates a model specficiation for a hidden Markov model
 }
 \usage{
-hmmspec(init, trans, emission, r = rnorm.hsmm, f = dnorm.hsmm)
+hmmspec(init, trans, emission,f,r=NULL,mstep=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
  \item{init}{Distribution of states at t=1 ie. P(S=s) at t=1}
   \item{trans}{The transition matrix of the Markov chain}
   \item{emission}{A list containing the parameters of the emission distribution}
-  \item{r}{The function used to generate observations from the emission distribution}
   \item{f}{Density function of the emission distribution.}
+  \item{r}{The function used to generate observations from the emission distribution}
+  \item{mstep}{ Re-estimates the parameters of density function on each iteration}
+  
 }
 \value{
   A hmmspec object

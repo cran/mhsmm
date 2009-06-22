@@ -6,13 +6,14 @@
   Simulates values for a specified hidden semi-Markov model
 }
 \usage{
-\method{simulate}{hsmmspec}(object, nsim, seed = NULL,...)
+\method{simulate}{hsmmspec}(object, nsim, seed = NULL,r=NULL,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ A \code{hsmmspec} object }
   \item{nsim}{An integer or vector of integers (for multiple sequences) specifying the length of the sequence(s) }
   \item{seed}{ \code{seed} for the random number generator}
+  \item{r}{The function used to generate observations from the emission distribution}
   \item{\dots}{further arguments passed to or from other methods.}
 
 }

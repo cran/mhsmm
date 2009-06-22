@@ -5,7 +5,7 @@
   Creates a model specification of a hidden semi-Markov model.
 }
 \usage{
-hsmmspec(init, transition, emission, sojourn, r = rnorm.hsmm)
+hsmmspec(init,transition,emission,sojourn,f,r=NULL,mstep=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -13,7 +13,9 @@ hsmmspec(init, transition, emission, sojourn, r = rnorm.hsmm)
   \item{transition}{The transition matrix of the embedded Markov chain (diagonal must be 0)}
   \item{emission}{A list containing the parameters of the emission distribution}
   \item{sojourn}{A list containining the parameters and type of sojourn distribtuion (see Details)}
-  \item{r}{The function used to generate observations from the emission distribution}
+   \item{f}{ Density function of the emission distribution }
+  \item{r}{The function used to generate observations from the emission distribution}              
+  \item{mstep}{ Re-estimates the parameters of density function on each iteration }
 }
 \details{
   This provides a 

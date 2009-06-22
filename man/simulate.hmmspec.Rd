@@ -5,13 +5,14 @@
 Simulates data from a hidden Markov model
 }
 \usage{
-\method{simulate}{hmmspec}(object, nsim, seed = NULL, ...)
+\method{simulate}{hmmspec}(object, nsim, seed = NULL, r=NULL,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ A \code{hmmspec} object }
   \item{nsim}{An integer or vector of integers (for multiple sequences) specifying the length of the sequence(s) }
   \item{seed}{ \code{seed} for the random number generator}
+  \item{r}{The function used to generate observations from the emission distribution}
   \item{\dots}{further arguments passed to or from other methods.}
   
 }
@@ -36,8 +37,8 @@ J<-3
 initial <- rep(1/J,J)
 P <- matrix(c(.8,.5,.1,0.05,.2,.5,.15,.3,.4),nrow=J)
 b <- list(mu=c(-3,0,2),sigma=c(2,1,.5))
-model <- hmmspec(init=initial, trans=P, emission=b, r=rnorm.hsmm)
-train <- simulate(model, nsim=100, seed=1234)
+model <- hmmspec(init=initial, trans=P, emission=b,f=dnorm.hsmm)
+train <- simulate(model, nsim=100, seed=1234, r=rnorm.hsmm)
 plot(train)
 
 }

@@ -54,6 +54,7 @@ print.hsmmspec <- function(x, ...){
 
 
 .check.hsmmspec <- function(object) {
+  if(is.null(object$f)) stop("No density function(f) provided!")
   if(is.null(object$init)) stop("No initial distribution specified!")
   if(is.null(object$transition)) stop("No initial distribution specified!")
   if(is.null(object$emission)) stop("No emission distribution specified!")
@@ -64,21 +65,24 @@ print.hsmmspec <- function(x, ...){
   if(!isTRUE(all.equal(sum(diag(object$transition)),0))) stop('non-zero entry on diagonal of transition matrix')  
 }
 
-hsmmspec <- function(init,transition,emission,sojourn,r=rnorm.hsmm) {
+hsmmspec <- function(init,transition,emission,sojourn,f,r=NULL,mstep=NULL) {
+  if(is.null(f)) stop("f not specified")
   if(length(init)!=NROW(transition))    stop('length(init)!=NROW(transition)')
   if(NROW(transition)!=NCOL(transition)) stop('NROW(transition)!=NCOL(transition)')
   if(!isTRUE(all.equal(sum(diag(matrix(c(0,.1,.4,.5,0,.6,.5,.9,0),nrow=3))),0))) stop('non-zero entry on diagonal of transition matrix')
   if(is.null(sojourn$type)) stop("Sojourn distribution type not specified.")
   if(all(sojourn$type!=c("nonparametric","gamma","poisson"))) stop(paste("Invalid sojourn type specified (",sojourn$type,")"))
-  ans = list(J=length(init),init=init,transition=transition,emission=emission,sojourn=sojourn,r=r)
+  ans = list(J=length(init),init=init,transition=transition,emission=emission,sojourn=sojourn,r=r,f=f,mstep=mstep)
   class(ans) <- 'hsmmspec'
   ans  
 }
 
-simulate.hsmmspec <- function(object, nsim, seed=NULL,...)
+simulate.hsmmspec <- function(object, nsim, seed=NULL,r=NULL,...)
 {
   right.truncate=left.truncate=0
   if(!is.null(seed)) set.seed(seed)
+  if(is.null(r)&is.null(object$r)) stop("r not specified")
+  
   if(length(nsim)==1) {
     s0 = sim.mc(object$init,object$transition, nsim)
     if (object$sojourn$type == "poisson") {
@@ -115,8 +119,8 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,...)
     
     u = sapply(s0, fn)
     s1 = rep(s0, u)[(left.truncate + 1):(sum(u) - right.truncate)]
-    x = sapply(s1, object$r, object)
-    if (NCOL(x) > 1) 
+    x = sapply(s1,function(i) r(i,object))
+    if (NCOL(x) > 1)
         ret = list(s = s1, x = t(x), N = NCOL(x))
     else ret = list(s = s1, x = x, N = NROW(x))
     class(ret) <- "hsmm.data"
@@ -209,26 +213,6 @@ gammafit <- function(x,wt=NULL) {
       return(list(shape=a,scale=xhat/a))
 }
 
-mstep.norm <- function(x,wt) {
-    k = ncol(wt)
-    mu = numeric(k)
-    sigma = numeric(k)
-    for(i in 1:k) {
-      tmp = cov.wt(data.frame(x[!is.na(x)]),wt[!is.na(x),i])
-      mu[i] = tmp$center
-      sigma[i] = tmp$cov
-    }
-  list(mu=mu,sigma=sigma)
-}
-
-dnorm.hsmm <- function(x,j,model) {
-  ret = dnorm(x,model$emission$mu[j],sqrt(model$emission$sigma[j]))
-  ret[is.na(ret)] = 1
-  ret           
-}
-
-rnorm.hsmm <- function(j,model)  rnorm(1,model$emission$mu[j],sqrt(model$emission$sigma[j]))
-
 sim.mc <- function(init,transition,N) {
   if(!all.equal(rowSums(transition),rep(1,nrow(transition)))) stop("Rows of a must sum to one")
   if(!all.equal(sum(init),1)) stop("st must sum to one")
@@ -236,12 +220,6 @@ sim.mc <- function(init,transition,N) {
 	st= cumsum(init)
 	state = integer(sum(N))
   .C("sim_mc",as.double(st),as.double(a0),as.integer(nrow(transition)),state=state,as.integer(N),as.integer(length(N)),PACKAGE='mhsmm')$state
-}
-
-plot.hsmm.data <- function(x,...) {
-  	plot(ts(x$x),...)
- 	  if(!is.null(x$s)) .add.states(x$s,ht=axTicks(2)[1],time.scale=1)
-  	if(length(x$N)>1) abline(v=cumsum(x$N),lty=2) 	  
 }
 
 #rng for a shifted poisson distrubtion
@@ -254,15 +232,21 @@ plot.hsmm.data <- function(x,...) {
   else dpois(x-shift,lambda)
 }
 
-#hsmm <- function(x,model,f,mstep,maxit=100,sojourn.distribution=c("nonparametric","gamma","poisson"),lock.transition=FALSE,lock.d=FALSE,M=NA,graphical=FALSE) { #fit a hsmm to x
-hsmmfit <- function(x,model,f,mstep,maxit=100,lock.transition=FALSE,lock.d=FALSE,M=NA,graphical=FALSE) { #fit a hsmm to x
+hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock.d=FALSE,graphical=FALSE) {
   sojourn.distribution=model$sojourn$type
   tol=1e-4
 	ksmooth.thresh = 1e-20 #this is a threshold for which d(u) values to use - if we throw too many weights in the default density() seems to work quite poorly
   shiftthresh = 1e-20 #threshold for effective "0" when considering d(u)
   J = nrow(model$transition)
   model$J = J
+  
+  if(is.null(mstep)) 
+    if(is.null(model$mstep)) stop("mstep not specified")
+    else  mstep=model$mstep      
+
   .check.hsmmspec(model)
+  
+  f=model$f  
 
   if(class(x)=="numeric" | class(x)=="integer") {
 	 warning('x is a primitive vector.  Assuming single sequence.')
@@ -494,16 +478,6 @@ hsmmfit <- function(x,model,f,mstep,maxit=100,lock.transition=FALSE,lock.d=FALSE
   class(ret) <- "hsmm"
   ret
 }
-
-plot.hsmm <- function(x,...) {
-  tmp = x$model$d
-  plot(1:nrow(tmp),tmp[,1],type='l',...,ylab="d(u)",xlab="u",ylim=range(tmp))
-  for(i in 2:x$J)
-    lines(tmp[,i],type='l',col=i)
-  legend("topright",legend=1:x$J,col=1:x$J,lty=1)
-}
-
-
 
 predict.hsmm <- function(object,x,method="viterbi",...) {
   J = object$J
