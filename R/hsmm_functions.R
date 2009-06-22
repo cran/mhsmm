@@ -82,6 +82,7 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,r=NULL,...)
   right.truncate=left.truncate=0
   if(!is.null(seed)) set.seed(seed)
   if(is.null(r)&is.null(object$r)) stop("r not specified")
+  if(!is.null(r)) object$r=r
   
   if(length(nsim)==1) {
     s0 = sim.mc(object$init,object$transition, nsim)

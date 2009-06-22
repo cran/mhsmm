@@ -9,7 +9,7 @@ hsmmfit(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock.d=FALSE,gra
 }
 \arguments{
   \item{x}{A hsmm.data object (see Details)}
-  \item{model}{ Starting parameters for the model (see Details) }
+  \item{model}{ Starting parameters for the model (see \code{hsmmspec}) }
   \item{mstep}{ Re-estimates the parameters of density function on each iteration }
   \item{maxit}{ Maximum number of iterations }
   \item{M}{Maximum number of time spent in a state (truncates the waiting distribution)} 
