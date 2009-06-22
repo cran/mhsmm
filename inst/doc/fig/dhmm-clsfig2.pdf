@@ -2,10 +2,10 @@
 %Å‚Å„ÅœÅ”\r
 1 0 obj
 <<
-/CreationDate (D:20090924203304)
-/ModDate (D:20090924203304)
+/CreationDate (D:20100219143712)
+/ModDate (D:20100219143712)
 /Title (R Graphics Output)
-/Producer (R 2.9.0)
+/Producer (R 2.10.1)
 /Creator (R)
 >>
 endobj
@@ -2052,19 +2052,19 @@ Q q
 389.07 73.44 m 389.07 66.24 l S
 BT
 0.000 0.000 0.000 rg
-/F2 1 Tf 12.00 0.00 0.00 12.00 68.24 47.52 Tm (0) Tj
+/F2 1 Tf 12.00 0.00 -0.00 12.00 68.24 47.52 Tm (0) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 0.00 12.00 140.94 47.52 Tm (500) Tj
+/F2 1 Tf 12.00 0.00 -0.00 12.00 140.94 47.52 Tm (500) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 0.00 12.00 216.98 47.52 Tm (1000) Tj
+/F2 1 Tf 12.00 0.00 -0.00 12.00 216.98 47.52 Tm (1000) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 0.00 12.00 296.35 47.52 Tm (1500) Tj
+/F2 1 Tf 12.00 0.00 -0.00 12.00 296.35 47.52 Tm (1500) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 0.00 12.00 375.72 47.52 Tm (2000) Tj
+/F2 1 Tf 12.00 0.00 -0.00 12.00 375.72 47.52 Tm (2000) Tj
 ET
 59.04 84.53 m 59.04 361.87 l S
 59.04 84.53 m 51.84 84.53 l S
@@ -2104,7 +2104,7 @@ S
 Q q
 BT
 0.000 0.000 0.000 rg
-/F2 1 Tf 12.00 0.00 0.00 12.00 215.90 18.72 Tm [(Inde) 30 (x)] TJ
+/F2 1 Tf 12.00 0.00 -0.00 12.00 215.90 18.72 Tm [(Inde) 30 (x)] TJ
 ET
 BT
 /F2 1 Tf 0.00 12.00 -12.00 0.00 12.96 191.95 Tm [(cls1b[sho) 15 (w])] TJ
@@ -2676,7 +2676,7 @@ Q
 endstream
 endobj
 7 0 obj
-46561
+46567
 endobj
 3 0 obj
 <<
@@ -2699,7 +2699,9 @@ endobj
 <<
 /Type /Encoding
 /BaseEncoding /WinAnsiEncoding
-/Differences [ 45/minus ]
+/Differences [ 45/minus 96/quoteleft
+144/dotlessi /grave /acute /circumflex /tilde /macron /breve /dotaccent
+/dieresis /.notdef /ring /cedilla /.notdef /hungarumlaut /ogonek /caron /space]
 >>
 endobj
 9 0 obj <<
@@ -2713,14 +2715,14 @@ xref
 0 10
 0000000000 65535 f 
 0000000021 00000 n 
-0000000163 00000 n 
-0000046927 00000 n 
-0000047010 00000 n 
-0000000212 00000 n 
-0000000292 00000 n 
-0000046906 00000 n 
-0000047091 00000 n 
-0000047185 00000 n 
+0000000164 00000 n 
+0000046934 00000 n 
+0000047017 00000 n 
+0000000213 00000 n 
+0000000293 00000 n 
+0000046913 00000 n 
+0000047098 00000 n 
+0000047355 00000 n 
 trailer
 <<
 /Size 10
@@ -2728,5 +2730,5 @@ trailer
 /Root 2 0 R
 >>
 startxref
-47281
+47451
 %%EOF

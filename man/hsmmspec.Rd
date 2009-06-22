@@ -34,4 +34,4 @@ hsmmspec(init,transition,emission,sojourn,f,r=NULL,mstep=NULL)
 \references{ Guedon, Y. (2003),  Estimating hidden semi-Markov chains from discrete sequences, 
 	Journal of Computational and Graphical Statistics, Volume 12, Number 3, page 604-639 - 2003}
 \author{ Jared O'Connell }
-\seealso{ hsmm, simulate.hsmmspec, predict.hsmm}
+\seealso{ hsmmfit, simulate.hsmmspec, predict.hsmm}

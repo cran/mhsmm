@@ -2,18 +2,21 @@
 
 	* mhsmm package version 0.1.0 submitted to CRAN
 
-2009-03-31 Jared O'Connell <jared@graduate.uwa.edu.au>
+2009-03-31 Jared O'Connell <jared@well.ox.ac.uk>
 	
 	* changed hmm and hsmm to hmmfit and hsmmfit respectively
 	* added 'smoothed' method to predict.hmm and predict.hsmm
 
-2009-08-30 Jared O'Connell <jared@graduate.uwa.edu.au>
+2009-08-30 Jared O'Connell <jared@well.ox.ac.uk>
   
-  * some arguments for hsmmfit, hsmmspec, predict.hsmmspec as well as the respective HMM functions have been altered giving them a more sensible structure
-  * added a "lock.transition" argument to hmmfit
-  * added a Vignette on smoothing discrete data
+	* some arguments for hsmmfit, hsmmspec, predict.hsmmspec as well as the respective HMM functions have been altered giving them a more sensible structure
+	* added a "lock.transition" argument to hmmfit
+	* added a Vignette on smoothing discrete data
   
-2009-09-24 Jared O'Connell <jared@graduate.uwa.edu.au>	
+2009-09-24 Jared O'Connell <jared@well.ox.ac.uk>	
 
-  *added an example to the reprocows dataset
+	*added an example to the reprocows dataset
   
+	
+2010-02-19 Jared O'Connell <jared@well.ox.ac.uk>	
+	*fixed some documentation errors

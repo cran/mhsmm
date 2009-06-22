@@ -22,8 +22,7 @@ mstep.norm(x, wt)
 \value{
   Returns the \code{emission} slot of a \code{hmmspec} or \code{hsmmspec} object
   \item{mu}{Vector of length J contain the means}
-  \item{mu}{Vector of length J containing the variances}
-  ...
+  \item{sigma}{Vector of length J containing the variances}
 }
 
 \author{Jared O'Connell}

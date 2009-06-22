@@ -30,7 +30,7 @@
 	Journal of Computational and Graphical Statistics, Volume 12, Number 3, page 604-639 - 2003}
 \author{Jared O'Connell}
 
-\seealso{ hsmm }
+\seealso{ hsmmfit }
 \examples{
-##See 'hsmm' for examples
+##See 'hsmmfit' for examples
 }

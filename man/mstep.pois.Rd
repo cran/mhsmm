@@ -22,7 +22,6 @@ mstep.pois(x, wt)
 \value{
   Returns the \code{emission} slot of a \code{hmmspec} or \code{hsmmspec} object
   \item{lambda}{Vector of length J containing the Poisson parameters for each state j}
-  ...
 }
 
 \seealso{ \code{rpois.hsmm}, \code{dpois.hsmm}}
