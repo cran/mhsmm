@@ -29,7 +29,7 @@
 \references{Rabiner, L. (1989), A tutorial on hidden Markov models and selected applications
 in speech recognition, Proceedings of the IEEE, 77, 257-286.}
 
-\author{Jared O'Connell}
+\author{Jared O'Connell jared@well.ox.ac.uk}
 \seealso{\code{hmm}}
 \examples{
 ##See examples in 'hmm'

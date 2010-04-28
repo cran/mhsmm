@@ -5,16 +5,16 @@
   Creates a model specification of a hidden semi-Markov model.
 }
 \usage{
-hsmmspec(init,transition,emission,sojourn,f,r=NULL,mstep=NULL)
+hsmmspec(init,transition,parms.emission,sojourn,dens.emission,rand.emission=NULL,mstep=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{init}{Distribution of states at t=1 ie. P(S=s) at t=1}
   \item{transition}{The transition matrix of the embedded Markov chain (diagonal must be 0)}
-  \item{emission}{A list containing the parameters of the emission distribution}
+  \item{parms.emission}{A list containing the parameters of the emission distribution}
   \item{sojourn}{A list containining the parameters and type of sojourn distribtuion (see Details)}
-  \item{f}{ Density function of the emission distribution }
-  \item{r}{The function used to generate observations from the emission distribution}              
+  \item{dens.emission}{ Density function of the emission distribution }
+  \item{rand.emission}{The function used to generate observations from the emission distribution}              
   \item{mstep}{ Re-estimates the parameters of density function on each iteration }
 }
 \details{
@@ -33,5 +33,5 @@ hsmmspec(init,transition,emission,sojourn,f,r=NULL,mstep=NULL)
 }
 \references{ Guedon, Y. (2003),  Estimating hidden semi-Markov chains from discrete sequences, 
 	Journal of Computational and Graphical Statistics, Volume 12, Number 3, page 604-639 - 2003}
-\author{ Jared O'Connell }
-\seealso{ hsmmfit, simulate.hsmmspec, predict.hsmm}
+\author{ Jared O'Connell jared@well.ox.ac.uk }
+\seealso{ \code{\link{hsmmfit}} ,\code{\link{simulate.hsmmspec}}, \code{\link{predict.hsmm}}}

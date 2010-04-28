@@ -19,4 +19,4 @@
   An object of class 'summary.hmm'
 }
 
-\author{Jared O'Connell}
+\author{Jared O'Connell jared@well.ox.ac.uk}

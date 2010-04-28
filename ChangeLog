@@ -20,3 +20,8 @@
 	
 2010-02-19 Jared O'Connell <jared@well.ox.ac.uk>	
 	*fixed some documentation errors
+
+2010-05-19 Jared O'Connell <jared@well.ox.ac.uk>
+	*fixed some warnings
+	*changed some argument names to more sensible ones
+	*cleaned up documentation

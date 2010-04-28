@@ -61,7 +61,7 @@ A simple 'smoothing' of the observed states can be obtained as follows:
 The density function for the emission distribution is
 @ 
 <<>>=
-dpmf <- function(x,j,model) model$emission$pmf[j,x]
+dpmf <- function(x,j,model) model$parms.emission$pmf[j,x]
 @ %def 
 
 
@@ -74,7 +74,7 @@ init <- c(.5,.5)
 P <- matrix(c(.9,.1,.1,.9),nrow=J)
 B <- list(pmf=matrix(.1,ncol=J,nrow=J))
 diag(B$pmf) <- .9
-init.spec <- hmmspec(init,trans=P,emission=B,f=dpmf)
+init.spec <- hmmspec(init,trans=P,parms.emission=B,dens.emission=dpmf)
 init.spec
 @ %def 
 

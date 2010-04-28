@@ -6,7 +6,7 @@ print.hsmmspec <- function(x, ...){
   cat ("transition matrix:\n")
   print(x$transition)
   cat("emission distribution:\n")
-  print(x$emission)
+  print(x$parms.emission)
   cat("sojourn distribution:\n")
   print(x$sojourn)
   return(invisible(x))
@@ -54,10 +54,10 @@ print.hsmmspec <- function(x, ...){
 
 
 .check.hsmmspec <- function(object) {
-  if(is.null(object$f)) stop("No density function(f) provided!")
+  if(is.null(object$dens.emission)) stop("No emission density function provided!")
   if(is.null(object$init)) stop("No initial distribution specified!")
   if(is.null(object$transition)) stop("No initial distribution specified!")
-  if(is.null(object$emission)) stop("No emission distribution specified!")
+  if(is.null(object$parms.emission)) stop("No emission parameters specified!")
   if(is.null(object$sojourn)) stop("No sojourn distribution specified!")
   if(!is.null(object$sojourn$d)) if(NCOL(object$sojourn$d)!=nrow(object$transition)) stop("Inconsistent sojourn d")
   if(length(object$init)!=NROW(object$transition))    stop('length(init)!=NROW(transition)')
@@ -65,24 +65,24 @@ print.hsmmspec <- function(x, ...){
   if(!isTRUE(all.equal(sum(diag(object$transition)),0))) stop('non-zero entry on diagonal of transition matrix')  
 }
 
-hsmmspec <- function(init,transition,emission,sojourn,f,r=NULL,mstep=NULL) {
-  if(is.null(f)) stop("f not specified")
+hsmmspec <- function(init,transition,parms.emission,sojourn,dens.emission,rand.emission=NULL,mstep=NULL) {
+  if(is.null(dens.emission)) stop("dens.emission not specified")
   if(length(init)!=NROW(transition))    stop('length(init)!=NROW(transition)')
   if(NROW(transition)!=NCOL(transition)) stop('NROW(transition)!=NCOL(transition)')
   if(!isTRUE(all.equal(sum(diag(matrix(c(0,.1,.4,.5,0,.6,.5,.9,0),nrow=3))),0))) stop('non-zero entry on diagonal of transition matrix')
   if(is.null(sojourn$type)) stop("Sojourn distribution type not specified.")
   if(all(sojourn$type!=c("nonparametric","gamma","poisson"))) stop(paste("Invalid sojourn type specified (",sojourn$type,")"))
-  ans = list(J=length(init),init=init,transition=transition,emission=emission,sojourn=sojourn,r=r,f=f,mstep=mstep)
+  ans = list(J=length(init),init=init,transition=transition,parms.emission=parms.emission,sojourn=sojourn,rand.emission=rand.emission,dens.emission=dens.emission,mstep=mstep)
   class(ans) <- 'hsmmspec'
   ans  
 }
 
-simulate.hsmmspec <- function(object, nsim, seed=NULL,r=NULL,...)
+simulate.hsmmspec <- function(object, nsim, seed=NULL,rand.emission=NULL,...)
 {
   right.truncate=left.truncate=0
   if(!is.null(seed)) set.seed(seed)
-  if(is.null(r)&is.null(object$r)) stop("r not specified")
-  if(!is.null(r)) object$r=r
+  if(is.null(rand.emission)&is.null(object$rand.emission)) stop("rand.emission not specified")
+  if(!is.null(rand.emission)) object$rand.emission=rand.emission
   
   if(length(nsim)==1) {
     s0 = sim.mc(object$init,object$transition, nsim)
@@ -120,7 +120,7 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,r=NULL,...)
     
     u = sapply(s0, fn)
     s1 = rep(s0, u)[(left.truncate + 1):(sum(u) - right.truncate)]
-    x = sapply(s1,function(i) r(i,object))
+    x = sapply(s1,function(i) rand.emission(i,object))
     if (NCOL(x) > 1)
         ret = list(s = s1, x = t(x), N = NCOL(x))
     else ret = list(s = s1, x = x, N = NROW(x))
@@ -128,7 +128,7 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,r=NULL,...)
     ret
   }
   else {           #TODO rewrite this clause
-    .sim.mhsmm(nsim,object,object$sojourn$type,object$r)
+    .sim.mhsmm(nsim,object,object$sojourn$type,object$rand.emission)
   }
 }
 
@@ -236,7 +236,7 @@ sim.mc <- function(init,transition,N) {
 hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock.d=FALSE,graphical=FALSE) {
   sojourn.distribution=model$sojourn$type
   tol=1e-4
-	ksmooth.thresh = 1e-20 #this is a threshold for which d(u) values to use - if we throw too many weights in the default density() seems to work quite poorly
+  ksmooth.thresh = 1e-20 #this is a threshold for which d(u) values to use - if we throw too many weights in the default density() seems to work quite poorly
   shiftthresh = 1e-20 #threshold for effective "0" when considering d(u)
   J = nrow(model$transition)
   model$J = J
@@ -247,7 +247,7 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
 
   .check.hsmmspec(model)
   
-  f=model$f  
+  f=model$dens.emission
 
   if(class(x)=="numeric" | class(x)=="integer") {
 	 warning('x is a primitive vector.  Assuming single sequence.')
@@ -268,7 +268,7 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
       M = nrow(model$sojourn$d)
       model$d = model$sojourn$d
     }
-    else stop("Waiting distribution (model$sojourn$d) not specified.")
+    else stop("Sojourn distribution (model$sojourn$d) not specified.")
    }
 
   if(sojourn.distribution=="poisson") {
@@ -372,7 +372,7 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
 
 #     if(any(apply(matrix(B$gamma,ncol=J),2,function(gamma) all(gamma==0)))) stop("all negative gamma detected.  Exiting...")
      old.model = new.model
-     new.model = list(emission=mstep(x,matrix(B$gamma,ncol=J)))
+     new.model = list(parms.emission=mstep(x,matrix(B$gamma,ncol=J)))
 
     if(lock.d) {
       new.model$d = old.model$d
@@ -456,7 +456,7 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
               new.model$d[,i] = new.model$d[,i]/sum(new.model$d[,i])              
             }
       }
-    else stop("Invalid waiting distribution")         
+    else stop("Invalid sojourn distribution")         
        new.model$D = apply(new.model$d,2,function(x) rev(cumsum(rev(x))))
 #       new.model$D[new.model$D<1e-300]=1e-300
     }     
@@ -466,7 +466,9 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
      }
      else {
        new.model$init=B$init
+       new.model$init[new.model$init<0]=0
        new.model$transition = matrix(B$transition,ncol=J)
+       new.model$transition[new.model$transition<0]=0
      }
 #     if(any(is.na(
      ll[it]=sum(log(B$N))
@@ -563,8 +565,8 @@ summary.hsmm <- function(object,...) {
 	print(object$model$init,2)	
 	cat("\nTransition matrix = \n")
 	print(object$model$transition,2)
-	cat("\nWaiting distrbution parameters = \n")
+	cat("\nSojourn distribution parameters = \n")
 	print(object$model$sojourn)
 	cat("\nEmission distribution parameters = \n")
-	print(object$model$emission)
+	print(object$model$parms.emission)
 }

@@ -33,4 +33,4 @@ addStates(states, x=NULL,
   plot(seq(0.01,1,.01),rnorm(100),type='l')
   addStates(rep(c(1,2),each=50),seq(0.01,1,.01))  
 }
-\author{Soren Hojsgaard}
+\author{Soren Hojsgaard sorenh@agrsci.dk}

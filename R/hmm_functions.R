@@ -7,7 +7,7 @@ print.hmmspec <- function(x, ...){
   cat ("transition:\n")
   print(x$transition)
   cat("emission:\n")
-  print(x$emission)
+  print(x$parms.emission)
   return(invisible(x))
 }
 
@@ -18,32 +18,32 @@ summary.hmm <- function (object, ...)
     cat ("\ntransition:\n")
     print(round(object$model$trans, 3)) ## FIXME: This is **Very** fragile
     cat("\nemission:\n")
-    print(object$model$emission)
+    print(object$model$parms.emission)
     return(invisible(object))
 }
 
 
-simulate.hmmspec <- function(object, nsim, seed=NULL, r=NULL,...) {
+simulate.hmmspec <- function(object, nsim, seed=NULL, rand.emission=NULL,...) {
 
   if(!is.null(seed)) set.seed(seed)
-  if(is.null(r)&is.null(object$r)) stop("r not specified")
-  if(is.null(r)) r=object$r
+  if(is.null(rand.emission)&is.null(object$rand.emission)) stop("rand.emission not specified")
+  if(is.null(rand.emission)) rand.emission=object$rand.emission
   
   if(length(nsim)==1) {
    s1 = sim.mc(object$init,object$transition, nsim)
-   x = sapply(s1, r, model=object)
+   x = sapply(s1, rand.emission, model=object)
     if (NCOL(x) > 1) 
         ret = list(s = s1, x = t(x), N = nsim)
     else ret = list(s = s1, x = x, N = nsim)
    class(ret) <- "hsmm.data"
    ret
   }
-  else  .sim.mhmm(object,nsim,r)
+  else  .sim.mhmm(object,nsim,rand.emission)
 }
 
-.sim.mhmm <- function(model,N,r) {
-  s1 = sim.mc(model$init,model$transition,N)#the hidden states
-  x = sapply(s1,r,model) #simulate the observed state sequence
+.sim.mhmm <- function(model,N,rand.emission) {
+  s1 = sim.mc(model$init,model$transition,N) #the hidden states
+  x = sapply(s1, rand.emission, model)       #simulate the observed state sequence
   if(NCOL(x)>1) ret = list(s=s1,x=t(x),N=N)
   else ret = list(s=s1,x=x,N=N)
 
@@ -51,8 +51,9 @@ simulate.hmmspec <- function(object, nsim, seed=NULL, r=NULL,...) {
   ret                                            
 }
 
-hmmspec <- function(init, trans, emission,f,r=NULL,mstep=NULL) {
- ans <- list(J=length(init), init = init, transition = trans, emission = emission,f=f,r=r,mstep=mstep)
+hmmspec <- function(init, trans, parms.emission, dens.emission, rand.emission=NULL, mstep=NULL) {
+ ans <- list(J=length(init), init = init, transition = trans, parms.emission = parms.emission,dens.emission=dens.emission,
+             rand.emission=rand.emission,mstep=mstep)
  class(ans) <- "hmmspec"
  return(ans)
 }
@@ -78,26 +79,26 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
   model = start.val
   K = nrow(model$trans)
   if(class(x)=="numeric" | class(x)=="integer") {
-  	warning('x is a primitive vector.  Assuming single sequence.')
-  	N = NN = NROW(x)
+    warning('x is a primitive vector.  Assuming single sequence.')
+    N = NN = NROW(x)
   }
   else{
-	  N = NN = x$N
-  	x = x$x
+    N = NN = x$N
+    x = x$x
   }
-
+  
   if(K<2) stop("K must be larger than one.")	
   if(any(dim(model$trans)!=K)) stop("dimensions of a incorrect")
   if(length(model$init)!=K) stop("dimensions of st incorrect")
   if(NROW(x)!=sum(N)) stop("dimensions incorrect")
   if(length(N)==1) NN=1
   else NN = length(N)
-
- if(is.null(mstep)) 
+  
+  if(is.null(mstep)) 
     if(is.null(model$mstep)) stop("mstep not specified")
     else  mstep=model$mstep      
 
-  f=model$f
+  f=model$dens.emission
 
   loglik=numeric(maxit)
   loglik=NA
@@ -114,10 +115,12 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
   if(i>1)    if(abs(loglik[i]-loglik[i-1])<tol) break("Converged")
 #    if((loglik[i]-loglik[i-1])<(-tol)) stop(paste("loglikelihood has decreased on iteration",i))
     gam = matrix(test$gam,ncol=K)
-    model$emission = mstep(x,gam)
+    model$parms.emission = mstep(x,gam)
     if(!lock.transition) {
       model$transition=matrix(test$a,nrow=K,byrow=TRUE)
       model$init=test$pi
+      model$init[model$init<0]=0
+      model$transition[model$transition<0]=0
     }
   }  
   ret = list(model=model,K=K,f=f,mstep=mstep,gam=gam,loglik=loglik[!is.na(loglik)],N=N,p=gam,yhat=apply(gam,1,which.max))

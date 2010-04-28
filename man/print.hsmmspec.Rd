@@ -14,4 +14,4 @@
   \item{\dots}{further arguments passed to or from other methods.}
 
 }
-\author{Jared O'Connell}
+\author{Jared O'Connell jared@well.ox.ac.uk}

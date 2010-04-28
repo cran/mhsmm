@@ -6,12 +6,12 @@ mstep.pois <- function (x, wt)
     list(lambda=lambda)
 }
 
-dpois.hsmm <- function (x, j, model) dpois(x,model$emission$lambda[j])
+dpois.hsmm <- function (x, j, model) dpois(x,model$parms.emission$lambda[j])
 
-rpois.hsmm <- function (j, model)  rpois(1, model$emission$lambda[j])
+rpois.hsmm <- function (j, model)  rpois(1, model$parms.emission$lambda[j])
 
 rmvnorm.hsmm <- function(j,model) 
-  rmvnorm(1,mean=model$emission$mu[[j]],sigma=model$emission$sigma[[j]])
+  rmvnorm(1,mean=model$parms.emission$mu[[j]],sigma=model$parms.emission$sigma[[j]])
 
 mstep.mvnorm <- function(x, wt) {
   idx <-  apply(is.na(x),1,any) # Find rows with NA's (cov.wt does not like them)
@@ -28,8 +28,8 @@ mstep.mvnorm <- function(x, wt) {
 } 
 
 dmvnorm.hsmm <- function(x, j, model) {
-  ans <- dmvnorm(x, mean = model$emission$mu[[j]],
-  sigma = model$emission$sigma[[j]])
+  ans <- dmvnorm(x, mean = model$parms.emission$mu[[j]],
+  sigma = model$parms.emission$sigma[[j]])
   ans[is.na(ans)] <- 1
   ans 
 }
@@ -47,9 +47,9 @@ mstep.norm <- function(x,wt) {
 }
 
 dnorm.hsmm <- function(x,j,model) {
-  ret = dnorm(x,model$emission$mu[j],sqrt(model$emission$sigma[j]))
+  ret = dnorm(x,model$parms.emission$mu[j],sqrt(model$parms.emission$sigma[j]))
   ret[is.na(ret)] = 1
   ret           
 }
 
-rnorm.hsmm <- function(j,model)  rnorm(1,model$emission$mu[j],sqrt(model$emission$sigma[j]))
+rnorm.hsmm <- function(j,model)  rnorm(1,model$parms.emission$mu[j],sqrt(model$parms.emission$sigma[j]))
