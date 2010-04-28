@@ -25,3 +25,7 @@
 	*fixed some warnings
 	*changed some argument names to more sensible ones
 	*cleaned up documentation
+
+2010-07-14 Søren Højsgaard <sorenh@agrsci.dk>	
+	* smooth.discrete function added
+	* a vignette on smooth.discrete added.

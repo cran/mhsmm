@@ -1,11 +1,14 @@
-% \VignetteIndexEntry{HMM for discrete data}
+% \VignetteIndexEntry{Smoothing discrete data (II)}
 % \VignetteDepends{mhsmm}
 % \VignetteKeyword{Hidden Markov Model}
 
 \documentclass{article}
 
 \usepackage{a4wide}
-\title{Using \texttt{mhsmm} for smoothing discrete data}
+\usepackage[T1]{fontenc}
+
+\title{Smoothing discrete data (II)\\ -- using a hidden Markov model as
+  implemented in the \texttt{mhsmm} package}
 \author{Søren Højsgaard and Jared O'Connell}
 
 \begin{document}
@@ -25,6 +28,10 @@ options("width"=80)
 @ %def 
 
 
+
+
+
+
 We apply the \verb'mhsmm' package for a simple smoothing task. The
 data pertain to classification of a cows eating behaviour over
 time. The true eating status $S_t$ is in the vector \verb'cls0' where
@@ -33,6 +40,9 @@ one minute.  The observed variables $x_t$ in \verb'cls1' are actually
 not observations per se but the result of a classification obtained by
 a neural network (using \verb'nnet()' from the \verb'nnet'
 package). 
+
+See also the vignette ``Smoothing discrete data (I)'' for an
+alternative approach to smoothing the data.
 
 
 @ 
