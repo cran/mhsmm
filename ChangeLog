@@ -42,3 +42,9 @@
 2011-04-05 Jared O'Connell <jared@well.ox.ac.uk>
 	* added log-likelihoods to output from predict.hmm and predict.hsmm
 
+2011-04-22 Jared O'Connell <jared@well.ox.ac.uk>
+	* fixed a bug in hmmfit
+
+2011-06-16 Jared O'Connell <jared@well.ox.ac.uk>	
+	* fixed memory problem in predict.hsmm
+

@@ -70,7 +70,8 @@ print.hmm <- function(x, ...) {
     N=x$N
     p = sapply(1:K,fn <- function(state) object$f(x$x,state,model))
     tmp = .C("mo_estep_hmm",a=as.double(t(model$transition)),pi=as.double(t(model$init)),p=as.double(t(p)),N=as.integer(x$N),nsequences=as.integer(length(x$N)),
-      K=as.integer(K),gam=double(K*sum(N)),ll=double(1),PACKAGE='mhsmm')      
+      K=as.integer(K),
+      alpha=double((K+1)*sum(N)) ,beta=double(K*sum(N)),gam=double(K*sum(N)),ll=double(1),PACKAGE='mhsmm')      
     list(gamma=matrix(tmp$gam,ncol=K),loglik=tmp$ll)
 }
 
@@ -108,14 +109,25 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
     p = sapply(1:K,fn <- function(state) f(x,state,model))
 
     #estep duh	
-    test = .C("mo_estep_hmm",a=as.double(t(model$transition)),pi=as.double(t(model$init)),p=as.double(t(p)),N=as.integer(N),nsequences=as.integer(NN),
-      K=as.integer(K),gam=gam,ll=double(1),PACKAGE='mhsmm')
+    test = .C("mo_estep_hmm",a=as.double(t(model$transition)),pi=as.double(t(model$init)),p=as.double(t(p)),
+      N=as.integer(N),nsequences=as.integer(NN), K=as.integer(K),
+      alpha=double((K+1)*sum(N)) ,beta=double(K*sum(N)),gam=gam,ll=double(1),PACKAGE='mhsmm')
     #mstep
     loglik[i]=test$ll                                   
   if(i>1)    if(abs(loglik[i]-loglik[i-1])<tol) break("Converged")
 #    if((loglik[i]-loglik[i-1])<(-tol)) stop(paste("loglikelihood has decreased on iteration",i))
     gam = matrix(test$gam,ncol=K)
-    model$parms.emission = mstep(x,gam)
+    if(length(formals(mstep))==2) {
+      model$parms.emission = mstep(x,gam)
+    }
+    else if(length(formals(mstep))==4) {
+      alpha = matrix(test$alpha,ncol=K+1)
+      beta = matrix(test$beta,ncol=K)
+      model$parms.emission = mstep(x,gam,alpha,beta)
+    }
+    else {
+      stop("Error: M-step function is invalid.")
+    }
     if(!lock.transition) {
       model$transition=matrix(test$a,nrow=K,byrow=TRUE)
       model$init=test$pi
