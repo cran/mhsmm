@@ -129,7 +129,9 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
 }
 
 
-predict.hmm <- function(object,x,method="viterbi",...) {
+predict.hmm <- function(object,newdata,method="viterbi",...) {
+  if(missing(newdata)) stop("no data passed to predict!")
+  else x = newdata
   if(class(x)=="numeric" | class(x)=="integer") {
   	warning('x is a primitive vector.  Assuming single sequence.')
   	N = NROW(x)
@@ -167,4 +169,8 @@ predict.hmm <- function(object,x,method="viterbi",...) {
   ans
 }
 
-
+predict.hmmspec <- function(object,newdata,method="viterbi",...) {
+  object2 <- list(model=object,K=object$J,f=object$dens.emission)
+  class(object2) <- "hmm"
+  predict(object2,newdata,method,...)  
+}

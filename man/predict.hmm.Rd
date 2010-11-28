@@ -3,15 +3,15 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Prediction function for hmm }
 \description{
-  Predicts the underlying state sequence for an observed sequence \code{x} given a \code{hmm} model
+  Predicts the underlying state sequence for an observed sequence \code{newdata} given a \code{hmm} model
 }
 \usage{
-\method{predict}{hmm}(object, x,method = "viterbi", ...)
+\method{predict}{hmm}(object, newdata,method = "viterbi", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ An object of class \code{hmm}}
-  \item{x}{ A vector or data.frame of observations }
+  \item{newdata}{ A vector or data.frame of observations }
   \item{method}{Prediction method (see details)}
   \item{\dots}{further arguments passed to or from other methods.}
 
@@ -21,7 +21,7 @@
 }
 \value{
   Returns a \code{hsmm.data} object, suitable for plotting.
-  \item{x }{A vector or data.frame of observations}
+  \item{newdata }{A vector or data.frame of observations}
   \item{s }{A vector containing the reconstructed state sequence}
   \item{N }{The lengths of each sequence}
   \item{p }{A matrix where the rows represent time steps and the columns are the probability for the respective state (only produced when \code{method="smoothed"})}  
@@ -30,7 +30,7 @@
 in speech recognition, Proceedings of the IEEE, 77, 257-286.}
 
 \author{Jared O'Connell jared@well.ox.ac.uk}
-\seealso{\code{hmm}}
+\seealso{\code{hmmfit,hmmspec}}
 \examples{
-##See examples in 'hmm'
+##See examples in 'hmmfit'
 }

@@ -233,6 +233,74 @@ sim.mc <- function(init,transition,N) {
   else dpois(x-shift,lambda)
 }
 
+.build_d <- function(model,M) {
+  sojourn.distribution=model$sojourn$type
+  J = model$J
+  if(sojourn.distribution=='nonparametric' | sojourn.distribution=="ksmoothed-nonparametric") {
+    if(!is.null(model$sojourn$d)) {
+      if(ncol(model$sojourn$d)!=J) stop("ncol(model$d)!=J")
+      M = nrow(model$sojourn$d)
+      model$d = model$sojourn$d
+    }
+    else stop("Sojourn distribution (model$sojourn$d) not specified.")
+  }
+
+  if(sojourn.distribution=="poisson") {
+    if(is.null(model$sojourn$d)) {
+      if(is.null(model$sojourn$lambda)) stop('Invalid waiting parameters supplied')
+      if(is.null(model$sojourn$shift)) stop('No shift parameter provided for Poisson sojourn distribution (must be at least 1)')
+      model$d = matrix(nrow=M,ncol=model$J)  	
+      for(i in 1:J) model$d[,i] = .dpois.hsmm.sojourn(1:M,model$sojourn$lambda[i],model$sojourn$shift[i])
+    }
+    else
+      for(i in 1:J) model$d = model$sojourn$d
+  }
+  
+  if(sojourn.distribution=="lnorm") {
+    if(is.null(model$sojourn$d)) {
+      if(is.null(model$sojourn$meanlog) | is.null(model$sojourn$s.dlog)) stop('Invalid waiting parameters supplied')
+      model$d = matrix(nrow=M,ncol=model$J)  	
+      for(i in 1:J) model$d[,i] = dlnorm(1:M,model$sojourn$meanlog[i],model$sojourn$s.dlog[i])
+    }
+    else
+      for(i in 1:J) model$d = model$sojourn$d
+  }
+
+  if(sojourn.distribution=="gamma") {
+    if(is.null(model$sojourn$shape) | is.null(model$sojourn$scale)) {
+      if(is.null(model$sojourn$d))
+        stop('Invalid waiting parameters supplied')
+      else model$d = model$sojourn$d
+    }
+    else {    
+      model$d = matrix(nrow=M,ncol=model$J)
+      for(i in 1:J) model$d[,i] = dgamma(1:M,shape=model$sojourn$shape[i],scale=model$sojourn$scale[i])
+    }
+  }  
+
+  if(sojourn.distribution=="logarithmic") {
+    if(is.null(model$sojourn$shape)) {
+      if(is.null(model$sojourn$d))
+        stop('Invalid waiting parameters supplied')
+      else model$d = model$sojourn$d
+    }
+    else {    
+      model$d = matrix(nrow=M,ncol=model$J)
+      for(i in 1:J) model$d[,i] = .dlog(1:M,model$sojourn$shape[i])
+    }
+  }  
+  
+  if (sojourn.distribution == "nbinom") {
+    model$d = matrix(nrow = M, ncol = J)
+    if(is.null(model$sojourn$mu))    for (i in 1:J) model$d[, i] = .dnbinom.hsmm.sojourn(1:M,size=model$sojourn$size[i],prob=model$sojourn$prob[i],shift=model$sojourn$shift[i])
+    if(is.null(model$sojourn$prob))    for (i in 1:J) model$d[, i] = .dnbinom.hsmm.sojourn(1:M,size=model$sojourn$size[i],mu=model$sojourn$mu[i],shift=model$sojourn$shift[i])
+  }
+
+  model$d=head(model$d,M)
+  model$D = apply(model$d,2,function(x) rev(cumsum(rev(x))))
+  model
+}
+
 hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock.d=FALSE,graphical=FALSE) {
   sojourn.distribution=model$sojourn$type
   tol=1e-4
@@ -260,74 +328,8 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
   if(is.na(M)) M = max(NN)      
   if(length(model$init)!=J) stop("length(model$init)!=J")
   if(NROW(x)!=sum(NN)) stop("NROW(x)!=sum(NN)")
-
+  model <- .build_d(model,M)
   
-   if(sojourn.distribution=='nonparametric' | sojourn.distribution=="ksmoothed-nonparametric") {
-    if(!is.null(model$sojourn$d)) {
-      if(ncol(model$sojourn$d)!=J) stop("ncol(model$d)!=J")
-      M = nrow(model$sojourn$d)
-      model$d = model$sojourn$d
-    }
-    else stop("Sojourn distribution (model$sojourn$d) not specified.")
-   }
-
-  if(sojourn.distribution=="poisson") {
-    if(is.null(model$sojourn$d)) {
-    	if(is.null(model$sojourn$lambda)) stop('Invalid waiting parameters supplied')
-    	if(is.null(model$sojourn$shift)) stop('No shift parameter provided for Poisson sojourn distribution (must be at least 1)')
-      model$d = matrix(nrow=M,ncol=model$J)  	
-    	for(i in 1:J) model$d[,i] = .dpois.hsmm.sojourn(1:M,model$sojourn$lambda[i],model$sojourn$shift[i])
-   	}
-   	else
-      for(i in 1:J) model$d = model$sojourn$d
-  }
-
-  if(sojourn.distribution=="lnorm") {
-    if(is.null(model$sojourn$d)) {
-    	if(is.null(model$sojourn$meanlog) | is.null(model$sojourn$s.dlog)) stop('Invalid waiting parameters supplied')
-      model$d = matrix(nrow=M,ncol=model$J)  	
-    	for(i in 1:J) model$d[,i] = dlnorm(1:M,model$sojourn$meanlog[i],model$sojourn$s.dlog[i])
-   	}
-   	else
-      for(i in 1:J) model$d = model$sojourn$d
-  }
-
-  if(sojourn.distribution=="gamma") {
-	 if(is.null(model$sojourn$shape) | is.null(model$sojourn$scale)) {
-  	if(is.null(model$sojourn$d))
-      stop('Invalid waiting parameters supplied')
-      else model$d = model$sojourn$d
-    }
-    else {    
-      model$d = matrix(nrow=M,ncol=model$J)
-      for(i in 1:J) model$d[,i] = dgamma(1:M,shape=model$sojourn$shape[i],scale=model$sojourn$scale[i])
-    }
-  }  
-
-  if(sojourn.distribution=="logarithmic") {
-	 if(is.null(model$sojourn$shape)) {
-  	if(is.null(model$sojourn$d))
-      stop('Invalid waiting parameters supplied')
-    else model$d = model$sojourn$d
-   }
-   else {    
-  	model$d = matrix(nrow=M,ncol=model$J)
-    for(i in 1:J) model$d[,i] = .dlog(1:M,model$sojourn$shape[i])
-   }
-  }  
-  
-  if (sojourn.distribution == "nbinom") {
-    model$d = matrix(nrow = M, ncol = J)
-    if(is.null(model$sojourn$mu))    for (i in 1:J) model$d[, i] = .dnbinom.hsmm.sojourn(1:M,size=model$sojourn$size[i],prob=model$sojourn$prob[i],shift=model$sojourn$shift[i])
-    if(is.null(model$sojourn$prob))    for (i in 1:J) model$d[, i] = .dnbinom.hsmm.sojourn(1:M,size=model$sojourn$size[i],mu=model$sojourn$mu[i],shift=model$sojourn$shift[i])
-  }
-
-
-  model$d=head(model$d,M)
-#  model$d = model$d + 1e-300
-#  model$d = apply(model$d,2,fn <- function(x) x/sum(x))
-  model$D = apply(model$d,2,function(x) rev(cumsum(rev(x))))
-
   new.model = model
   ll = rep(NA,maxit)
   rm(model)
@@ -482,7 +484,9 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
   ret
 }
 
-predict.hsmm <- function(object,x,method="viterbi",...) {
+predict.hsmm <- function(object,newdata,method="viterbi",...) {
+  if(missing(newdata)) stop("newdata missing!")
+  else x=newdata
   J = object$J
   m=-1e300
   if(class(x)=="numeric" | class(x)=="integer") {
@@ -570,3 +574,16 @@ summary.hsmm <- function(object,...) {
 	cat("\nEmission distribution parameters = \n")
 	print(object$model$parms.emission)
 }
+
+
+predict.hsmmspec <- function(object,newdata,method="viterbi",M=NA,...) {
+  if(class(newdata)=="hsmm.data") NN = newdata$N
+  else NN = length(newdata)
+  if(is.na(M)) M = max(NN)
+  .check.hsmmspec(object)
+  model <- .build_d(object,M)
+  object2 <- list(model=model,J=model$J,f=model$dens.emission)
+  class(object2) <- "hsmm"
+  predict(object2,newdata,method)    
+}
+
