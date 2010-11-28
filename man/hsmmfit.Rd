@@ -23,7 +23,12 @@ hsmmfit(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock.d=FALSE,gra
   \item{emission}{A list of the parameters of the emission distribution}
   \item{waiting}{A list of the parameters of the waiting distribution}	
 }
-\references{ Guedon, Y. (2003),  Estimating hidden semi-Markov chains from discrete sequences, 
+\references{Jared O'Connell, Soren Hojsgaard (2011). Hidden Semi Markov Models for
+Multiple Observation Sequences: The mhsmm Package for R., 
+Journal of Statistical Software, 39(4), 1-22., URL
+http://www.jstatsoft.org/v39/i04/.
+
+Guedon, Y. (2003),  Estimating hidden semi-Markov chains from discrete sequences, 
 	Journal of Computational and Graphical Statistics, Volume 12, Number 3, page 604-639 - 2003 }
 \author{ Jared O'Connell jared@well.ox.ac.uk }
 \seealso{\code{\link{hsmmspec}},\code{\link{simulate.hsmmspec}},\code{\link{predict.hsmm}}

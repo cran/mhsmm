@@ -22,8 +22,14 @@ hmmspec(init, trans, parms.emission, dens.emission, rand.emission=NULL,mstep=NUL
 \value{
   A hmmspec object
 }
-\references{Rabiner, L. (1989), A tutorial on hidden Markov models and selected applications
+\references{Jared O'Connell, Soren Hojsgaard (2011). Hidden Semi Markov Models for
+Multiple Observation Sequences: The mhsmm Package for R., 
+Journal of Statistical Software, 39(4), 1-22., URL
+http://www.jstatsoft.org/v39/i04/.
+
+Rabiner, L. (1989), A tutorial on hidden Markov models and selected applications
 in speech recognition, Proceedings of the IEEE, 77, 257-286.}
 \author{ Jared O'Connell jared@well.ox.ac.uk }
 
 \seealso{ \code{\link{simulate.hmmspec}}, \code{\link{simulate.hmmspec}}, \code{\link{hmmfit}}, \code{\link{predict.hmm}}}
+

@@ -31,7 +31,12 @@ hsmmspec(init,transition,parms.emission,sojourn,dens.emission,rand.emission=NULL
 \value{
   An object of class hsmmspec
 }
-\references{ Guedon, Y. (2003),  Estimating hidden semi-Markov chains from discrete sequences, 
+\references{Jared O'Connell, Soren Hojsgaard (2011). Hidden Semi Markov Models for
+Multiple Observation Sequences: The mhsmm Package for R., 
+Journal of Statistical Software, 39(4), 1-22., URL
+http://www.jstatsoft.org/v39/i04/.
+
+Guedon, Y. (2003),  Estimating hidden semi-Markov chains from discrete sequences, 
 	Journal of Computational and Graphical Statistics, Volume 12, Number 3, page 604-639 - 2003}
 \author{ Jared O'Connell jared@well.ox.ac.uk }
 \seealso{ \code{\link{hsmmfit}} ,\code{\link{simulate.hsmmspec}}, \code{\link{predict.hsmm}}}
