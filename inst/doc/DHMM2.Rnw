@@ -6,16 +6,18 @@
 
 \usepackage{a4wide}
 \usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
 
 \title{Smoothing discrete data (II)\\ -- using a hidden Markov model as
   implemented in the \texttt{mhsmm} package}
-\author{Søren Højsgaard and Jared O'Connell}
+
+\author{S{\o}ren H{\o}jsgaard and Jared O'Connell}
 
 \begin{document}
 
 
-\SweaveOpts{prefix.string=fig/dhmm} %sæt dir til "fig" og prefix til "bar" for figurer
-\setkeys{Gin}{width=0.5\textwidth} %sæt figurstørrelse i Sweave
+\SweaveOpts{prefix.string=fig/dhmm}
+\setkeys{Gin}{width=0.5\textwidth} 
 \renewenvironment{Schunk}{\linespread{.85}\small}{}
 
 \maketitle

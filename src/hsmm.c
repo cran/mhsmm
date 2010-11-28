@@ -1065,7 +1065,7 @@ void mo_estep_hmm(double *a,double *start,double *p,int *T,int *nsequences,int *
 }
 
 
-void viterbi_hmm(double *a,double *start,double *p,int *T,int *nsequences,int *nstates,int *q) {
+void viterbi_hmm(double *a,double *start,double *p,int *T,int *nsequences,int *nstates,int *q,double *loglik) {
 	int K = *nstates;
 	int N = *nsequences;
 	int i,j,t,n;
@@ -1120,10 +1120,12 @@ void viterbi_hmm(double *a,double *start,double *p,int *T,int *nsequences,int *n
 	}
 
 	P=1;
+	*loglik=0.0;
 	for(n=1;n<=N;n++) {
 		maxind = 0;
 		for(i=1;i<K;i++) 
 			if(delta[i][ii[n]-1]>delta[maxind][ii[n]-1]) maxind=i;	
+		*loglik+=delta[maxind][ii[n]-1];
 		q[ii[n]-1]=maxind;
 		P += delta[maxind][ii[n]-1];
 	}

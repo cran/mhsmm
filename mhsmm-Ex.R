@@ -1,7 +1,6 @@
 pkgname <- "mhsmm"
 source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
-options(pager = "console")
 library('mhsmm')
 
 assign(".oldSearch", search(), pos = 'CheckExEnv')

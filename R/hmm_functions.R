@@ -153,11 +153,14 @@ predict.hmm <- function(object,newdata,method="viterbi",...) {
     tmp[!tmp>0] =  1e-20
     logpi = as.double(log(t(tmp)))
     state = integer(sum(x$N))
-    for(i in 1:length(x$N)) {    
-         state[(NN[i]+1):NN[i+1]] = .C("viterbi_hmm",a=logtrans,pi=logpi,p=as.double(log(t(p[(NN[i]+1):NN[i+1],]))),N=as.integer(x$N[i]),NN=as.integer(nseq),K=as.integer(object$K),
-                q=as.integer(rep(-1,x$N[i])),PACKAGE='mhsmm')$q+1
+    loglik=0
+    for(i in 1:length(x$N)) {
+      tmp <- .C("viterbi_hmm",a=logtrans,pi=logpi,p=as.double(log(t(p[(NN[i]+1):NN[i+1],]))),N=as.integer(x$N[i]),NN=as.integer(nseq),K=as.integer(object$K),
+                q=as.integer(rep(-1,x$N[i])),loglik=as.double(c(0)),PACKAGE='mhsmm')
+      loglik=loglik+tmp$loglik
+      state[(NN[i]+1):NN[i+1]] = tmp$q+1
     }
-    ans <- list(s=state,x=x$x,N=x$N)
+    ans <- list(s=state,x=x$x,N=x$N,loglik=loglik)
   }
   else if(method=="smoothed") {
     tmp <- .estep.hmm(x,object)

@@ -38,3 +38,7 @@
 
 2010-11-28 Jared O'Connell <jared@well.ox.ac.uk>
 	* added predict.hsmmspec/predict.hmmspec so models where parameters are already known can be used for prediction
+	
+2011-04-05 Jared O'Connell <jared@well.ox.ac.uk>
+	* added log-likelihoods to output from predict.hmm and predict.hsmm
+

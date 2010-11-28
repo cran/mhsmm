@@ -3,19 +3,20 @@
 % \VignetteKeyword{Hidden Markov Model}
 
 \documentclass{article}
-
 \usepackage{a4wide}
 \usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+
 \title{Smoothing discrete data (I)\\ -- using the \texttt{smooth.discrete()} function in the
   \texttt{mhsmm} package}
-\author{Søren Højsgaard and Jared O'Connell}
+\author{S{\o}ren H{\o}jsgaard and Jared O'Connell}
 
 \def\code#1{\texttt{#1}}
 
 \begin{document}
 
-\SweaveOpts{prefix.string=fig/smooth} %sæt dir til "fig" og prefix til "bar" for figurer
-\setkeys{Gin}{width=0.5\textwidth,height=2in} %sæt figurstørrelse i Sweave
+\SweaveOpts{prefix.string=fig/smooth} 
+\setkeys{Gin}{width=0.5\textwidth,height=2in}
 \renewenvironment{Schunk}{\linespread{.85}\small}{}
 
 \maketitle
@@ -32,7 +33,6 @@ library(mhsmm)
 
 
 \section{Introduction}
-
 
 
 The \verb'smooth.discrete()' function provides a simple smoothing of a

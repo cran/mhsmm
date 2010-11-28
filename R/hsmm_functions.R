@@ -514,7 +514,8 @@ predict.hsmm <- function(object,newdata,method="viterbi",...) {
     d = log(d)
     d[d==-Inf]=m
     D = log(D)
-    D[D==-Inf]=m    
+    D[D==-Inf]=m
+    loglik=0
   for(i in 1:length(N)) {
     if(NCOL(x)==1)    b = log(unlist(sapply(1:J,function(state) object$f(x0[(NN[i]+1):NN[i+1]],state,object$model))))
     else    b = log(unlist(sapply(1:J,function(state) object$f(x0[(NN[i]+1):NN[i+1],],state,object$model))))
@@ -532,10 +533,11 @@ predict.hsmm <- function(object,newdata,method="viterbi",...) {
                 statehat=integer(N[i]),
                 psi_state0=integer(N[i]*J),
                 psi_time0=integer(N[i]*J)          
-                ,PACKAGE='mhsmm')    
+                ,PACKAGE='mhsmm')
+    loglik=loglik+max(tmp$alpha[N[i]*(1:3)])
     statehat[(NN[i]+1):NN[i+1]] = tmp$statehat+1
   }
-  ans <- list(x=x,s=statehat,N=N)
+  ans <- list(x=x,s=statehat,N=N,loglik=loglik)
  }
  else if(method=="smoothed") {    
     tmp <- hsmmfit(x,object$model,object$f,object$mstep,maxit=1,M=object$M)
