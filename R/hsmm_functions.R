@@ -114,7 +114,7 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,rand.emission=NULL,...)
 #        for (i in 1:object$J) object$d[, i] = .dnbinom.hsmm.sojourn(1:M,object$sojourn$size[i],object$sojourn$prob[i],object$sojourn$shift[i])
 #    }    
     else if (object$sojourn$type == "nonparametric") {
-      fn <- function(ii) sample(1:nrow(object$d), 1, prob = object$d[,ii])
+      fn <- function(ii) sample(1:nrow(object$sojourn$d), 1, prob = object$sojourn$d[,ii])
     }
     else stop("Unknown sojourn distribution")
     

@@ -3,10 +3,10 @@ Type: Package
 Title: Parameter estimation and prediction for hidden Markov and
         semi-Markov models for data with multiple observation
         sequences.
-Version: 0.4.4
-Date: 2010-11-28
+Version: 0.4.6
+Date: 2012-09-03
 Author: Jared O'Connell <jared@well.ox.ac.uk>, Søren Højsgaard
-        <sorenh@agrsci.dk>
+        <sorenh@math.aau.dk>
 Maintainer: Jared O'Connell <jared@well.ox.ac.uk>
 Description: Parameter estimation and prediction for hidden Markov and
         semi-Markov models for data with multiple observation
@@ -17,5 +17,5 @@ LazyLoad: yes
 Depends: mvtnorm
 Repository: CRAN
 Encoding: latin1
-Packaged: 2011-06-16 12:28:08 UTC; jared
-Date/Publication: 2011-06-17 06:45:10
+Packaged: 2012-09-03 13:07:58 UTC; jared
+Date/Publication: 2012-09-03 13:47:44

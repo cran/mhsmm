@@ -1,10 +1,4 @@
-2011-03-06 Søren Højsgaard <sorenh@agrsci.dk>
-
-	* JSS paper on the mhsmm package published
-	
-	* Version 0.4.0 submitted to CRAN
-	
-2009-03-02 Søren Højsgaard <sorenh@agrsci.dk>
+2009-03-02 Søren Højsgaard <sorenh@math.aau.dk>
 
 	* mhsmm package version 0.1.0 submitted to CRAN
 
@@ -32,7 +26,7 @@
 	*changed some argument names to more sensible ones
 	*cleaned up documentation
 
-2010-07-14 Søren Højsgaard <sorenh@agrsci.dk>	
+2010-07-14 Søren Højsgaard <sorenh@math.aau.dk>	
 	* smooth.discrete function added
 	* a vignette on smooth.discrete added.
 
@@ -47,4 +41,15 @@
 
 2011-06-16 Jared O'Connell <jared@well.ox.ac.uk>	
 	* fixed memory problem in predict.hsmm
+
+2011-03-06 Søren Højsgaard <sorenh@math.aau.dk>
+
+	* JSS paper on the mhsmm package published
+	
+	* Version 0.4.0 submitted to CRAN
+	
+2012-09-03 Jared O'Connell <jared@well.ox.ac.uk>
+	* Version 0.4.5 submitted to CRAN
+	* Fixed a bug that occurred when simulating from non-parametric
+	sojourn distributions
 
