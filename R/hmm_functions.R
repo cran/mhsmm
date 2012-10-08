@@ -107,7 +107,8 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
   gam = double(K*sum(N))
   for(i in 1:maxit) {  
     p = sapply(1:K,fn <- function(state) f(x,state,model))
-
+    if(any(apply(p,1,max)==0)) stop("Some values have 0 pdf for all states!  Check your model parameters")
+    
     #estep duh	
     test = .C("mo_estep_hmm",a=as.double(t(model$transition)),pi=as.double(t(model$init)),p=as.double(t(p)),
       N=as.integer(N),nsequences=as.integer(NN), K=as.integer(K),

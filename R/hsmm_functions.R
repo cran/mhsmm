@@ -341,6 +341,7 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
     if(graphical)   plot.hsmm(list(model=new.model,J=J))
     p = sapply(1:J,function(state) f(x,state,new.model))
     if(any(is.na(p))) stop("NAs detected in b(x), check your supplied density function")
+    if(any(apply(p,1,max)==0)) stop("Some values have 0 pdf for all states!  Check your model parameters")
     
 #    print(paste("Iteration",it))
 # E-STEP
@@ -522,7 +523,7 @@ predict.hsmm <- function(object,newdata,method="viterbi",...) {
     D[D==-Inf]=m
     loglik=0
   for(i in 1:length(N)) {
-    if(NCOL(x)==1)    b = log(unlist(sapply(1:J,function(state) object$f(x0[(NN[i]+1):NN[i+1]],state,object$model))))
+    if(NCOL(x0)==1)    b = log(unlist(sapply(1:J,function(state) object$f(x0[(NN[i]+1):NN[i+1]],state,object$model))))
     else    b = log(unlist(sapply(1:J,function(state) object$f(x0[(NN[i]+1):NN[i+1],],state,object$model))))
     b[b==-Inf]=m
     tmp = .C("viterbi",

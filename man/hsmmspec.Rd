@@ -5,7 +5,8 @@
   Creates a model specification of a hidden semi-Markov model.
 }
 \usage{
-hsmmspec(init,transition,parms.emission,sojourn,dens.emission,rand.emission=NULL,mstep=NULL)
+hsmmspec(init,transition,parms.emission,sojourn,dens.emission,
+	rand.emission=NULL,mstep=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

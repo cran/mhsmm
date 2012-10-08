@@ -5,7 +5,8 @@
   Estimates parameters of a HSMM using the EM algorithm.
 }
 \usage{
-hsmmfit(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock.d=FALSE,graphical=FALSE)
+hsmmfit(x,model,mstep=NULL,M=NA,maxit=100,
+        lock.transition=FALSE,lock.d=FALSE,graphical=FALSE)
 }
 \arguments{
   \item{x}{A hsmm.data object (see Details)}

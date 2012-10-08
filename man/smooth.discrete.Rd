@@ -15,7 +15,8 @@
   Under the hood of  smooth.discrete() is a hidden Markov model.
 }
 \usage{
-smooth.discrete(y, init = NULL, trans = NULL, parms.emission = 0.5, method = "viterbi", details = 0, ...)
+smooth.discrete(y, init = NULL, trans = NULL, parms.emission = 0.5, 
+                method = "viterbi", details = 0, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

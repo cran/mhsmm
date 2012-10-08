@@ -6,11 +6,10 @@
   Add a colour coded horizontal bar representing the state sequence to a plot of (presumably time-series) data.  
 }
 \usage{
-addStates(states, x=NULL,
-                       ybot = axTicks(2)[1], ytop=ybot + (axTicks(2)[2] - axTicks(2)[1])/5,
-                       dy  = ytop - ybot,
-                       greyscale = FALSE, leg = NA, J = length(unique(states)), 
-                       time.scale = 1, shiftx = 0)
+addStates(states, x=NULL,ybot = axTicks(2)[1],
+          ytop=ybot + (axTicks(2)[2] - axTicks(2)[1])/5,dy  = ytop - ybot,
+          greyscale = FALSE,leg = NA, J = length(unique(states)), time.scale = 1, 
+          shiftx = 0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{ 
