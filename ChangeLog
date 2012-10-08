@@ -53,3 +53,11 @@
 	* Fixed a bug that occurred when simulating from non-parametric
 	sojourn distributions
 
+2012-10-08 Jared O'Connell <jared@well.ox.ac.uk>
+	* Version 0.4.6
+	* Fixed another bug that occurred when simulating from non-parametric
+	sojourn distributions
+
+2013-01-26 Jared O'Connell <jared@well.ox.ac.uk>
+	* Minor bug fixes
+	

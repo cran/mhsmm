@@ -22,7 +22,7 @@
     algorithm for HSMMs, producing the most likely sequence of states
     given the observed data.  If \code{method="smoothed"}, then the
     individually most likely (or smoothed) state sequence is produced,
-    along with a matrix witht the respective probabilities for each
+    along with a matrix with the respective probabilities for each
     state.  This method is different to predict.hsmm in that it takes
     the output from \code{hsmmspec} as input ie. it is useful for people
     who already know their model parameters.

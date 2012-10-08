@@ -148,28 +148,30 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,rand.emission=NULL,...)
   	model$d = matrix(nrow=M,ncol=model$J)
   	for(i in 1:model$J) model$d[,i] = dgamma(1:M,model$sojourn$shape[i],scale=model$sojourn$scale[i])
   }
-    else if (sojourn.distribution=="lnorm" |sojourn.distribution=="lognormal") {
-        model$d = matrix(nrow = M, ncol = model$J)
-        for (i in 1:model$J) {
-          model$d[, i] = dlnorm(1:M, model$sojourn$meanlog[i],model$sojourn$s.dlog[i])
-          model$d[, i] = model$d[, i]/sum(model$d[, i])          
-        }        
-        
-    }
-    else if (sojourn.distribution == "logarithmic") {
-        model$d = matrix(nrow = M, ncol = model$J)
-        for (i in 1:model$J) model$d[, i] = .dlog(1:M,model$sojourn$shape[i])
-    }
-    else if (object$sojourn$type == "nbinom") {
-        model$d = matrix(nrow = M, ncol = object$J)
-        for (i in 1:object$J) model$d[, i] = .dnbinom.hsmm.sojourn(1:M,object$sojourn$size[i],object$sojourn$prob[i],object$sojourn$shift[i])
-    }    
-        
+  else if (sojourn.distribution=="lnorm" |sojourn.distribution=="lognormal") {
+    model$d = matrix(nrow = M, ncol = model$J)
+    for (i in 1:model$J) {
+      model$d[, i] = dlnorm(1:M, model$sojourn$meanlog[i],model$sojourn$s.dlog[i])
+      model$d[, i] = model$d[, i]/sum(model$d[, i])          
+    }                
+  }
+  else if (sojourn.distribution == "logarithmic") {
+    model$d = matrix(nrow = M, ncol = model$J)
+    for (i in 1:model$J) model$d[, i] = .dlog(1:M,model$sojourn$shape[i])
+  }
+  else if (object$sojourn$type == "nbinom") {
+    model$d = matrix(nrow = M, ncol = object$J)
+    for (i in 1:object$J) model$d[, i] = .dnbinom.hsmm.sojourn(1:M,object$sojourn$size[i],object$sojourn$prob[i],object$sojourn$shift[i])
+  }
+  else if (object$sojourn$type == "nonparametric") {
+    model$d <- model$sojourn$d
+  }
+  else stop("Unknown sojourn distribution")
+
   
-
-	fn <- function(ii) sample(1:nrow(model$d),1,prob=model$d[,ii])
-	u = sapply(s0,fn) #simulate the waiting times  
-
+  fn <- function(ii) sample(1:nrow(model$d),1,prob=model$d[,ii])
+  u = sapply(s0,fn) #simulate the waiting times  
+  
   s1 = rep(s0,u)[(left.truncate+1):(sum(u)-right.truncate)] #simulate actual state sequence
 
   NN = N
@@ -318,11 +320,11 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
   f=model$dens.emission
 
   if(class(x)=="numeric" | class(x)=="integer") {
-	 warning('x is a primitive vector.  Assuming single sequence.')
-   NN = NROW(x)    
+    warning('x is a primitive vector.  Assuming single sequence.')
+    NN = NROW(x)    
   }
   else{
-  	NN = x$N
+    NN = x$N
     x = x$x
   }
   if(is.na(M)) M = max(NN)      
@@ -374,7 +376,8 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
 
 #     if(any(apply(matrix(B$gamma,ncol=J),2,function(gamma) all(gamma==0)))) stop("all negative gamma detected.  Exiting...")
      old.model = new.model
-     new.model = list(parms.emission=mstep(x,matrix(B$gamma,ncol=J)))
+#     new.model = list(parms.emission=mstep(x,matrix(B$gamma,ncol=J)))
+    new.model$parms.emission = mstep(x,matrix(B$gamma,ncol=J))
 
     if(lock.d) {
       new.model$d = old.model$d
@@ -478,7 +481,9 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
      new.model$J = J
      if(it>2) if(abs(ll[it]-ll[it-1])<tol) break()
   }
-  new.model$sojourn$type = sojourn.distribution
+  ## new.model$dens.emssion <- f
+  ## new.model$sojourn$type = sojourn.distribution
+  class(new.model) <- "hsmmspec"
   ret = list(loglik=ll[!is.na(ll)],model=new.model,B=B,M=M,J=J,NN=NN,f=f,mstep=mstep,yhat=apply(matrix(B$gamma,ncol=J),1,which.max))#,N.debug=N.debug)
   class(ret) <- "hsmm"
   ret
@@ -527,7 +532,7 @@ predict.hsmm <- function(object,newdata,method="viterbi",...) {
                 d=as.double(d),
                 D=as.double(D),
                 timelength=as.integer(N[i]),
-                J=as.integer(J),
+                J=as.integer(J), 
                 M=as.integer(rep(M,J)),
                 alpha = double(N[i]*J),
                 statehat=integer(N[i]),
@@ -539,9 +544,12 @@ predict.hsmm <- function(object,newdata,method="viterbi",...) {
   }
   ans <- list(x=x,s=statehat,N=N,loglik=loglik)
  }
- else if(method=="smoothed") {    
-    tmp <- hsmmfit(x,object$model,object$f,object$mstep,maxit=1,M=object$M)
-    ans <- list(x=x$x,s=tmp$yhat,N=x$N,p=matrix(tmp$B$gamma,ncol=object$J))
+ else if(method=="smoothed") {
+   M = nrow(object$model$d)    
+   m <- object$model
+   m$dens.emission <- object$f
+   tmp <- hsmmfit(x,m,object$mstep,maxit=1,M=M)
+   ans <- list(x=x$x,s=tmp$yhat,N=x$N,p=matrix(tmp$B$gamma,ncol=object$J))
   }
   else stop(paste("Unavailable prediction method",method))
     

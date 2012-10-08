@@ -17,7 +17,7 @@
 
 }
 \details{
-    If \code{method="viterbi"}, this technique applies the Viterbi algorithm for HMMs, producing the most likely sequence of states given the observed data.  If \code{method="smoothed"}, then the individually most likely (or smoothed) state sequence is produced, along with a matrix witht the respective probabilities for each state.
+    If \code{method="viterbi"}, this technique applies the Viterbi algorithm for HMMs, producing the most likely sequence of states given the observed data.  If \code{method="smoothed"}, then the individually most likely (or smoothed) state sequence is produced, along with a matrix with the respective probabilities for each state.
 }
 \value{
   Returns a \code{hsmm.data} object, suitable for plotting.

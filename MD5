@@ -1,8 +1,8 @@
-3527c0b5d9b100b00e4691a4a369091e *ChangeLog
-9fbcf65bb7048fa9c610853fcb47b60d *DESCRIPTION
+95b935a34d13d7b15ee8f9cb947e41ff *ChangeLog
+5dc36da18f52c636eba6776b9831404d *DESCRIPTION
 5544d9f108a5a320c4440b334185e87f *NAMESPACE
 c1181db1035c65b81680c0a8d3c6aec1 *R/hmm_functions.R
-bf03eff2e07180e1a701042c2da66089 *R/hsmm_functions.R
+207285321605f5b24ee7722ea4f14a9b *R/hsmm_functions.R
 f933a1012438e9abc073359fa3810488 *R/plotting_functions.R
 085bec29c2df324d28b93760f97232df *R/smooth.discrete-src.R
 1261dd8990ccb327e85967341377acbd *R/spec_functions.R
@@ -13,7 +13,7 @@ d09b805e17a1eea11dc57670802ef5df *data/reproai.RData
 0bda7b22a09c822f7cd36278cce64c0e *inst/doc/DHMM1.Rnw
 9c8664c2b9c05b7838a1e84d020fe638 *inst/doc/DHMM1.pdf
 800a7e63854919f1b5e67cdd53604424 *inst/doc/DHMM2.Rnw
-eb29975b3fa0f132fe9d520397316b36 *inst/doc/DHMM2.pdf
+5c28c6284860aa0f80b449b2eb806950 *inst/doc/DHMM2.pdf
 2f91583ad020346f9aff308c40a60cf2 *man/addStates.Rd
 f7174bced858bd464f0c18f65cd13949 *man/dmvnorm.hsmm.Rd
 42ea3ffc91f7f92e00720a54270bc17e *man/dnorm.hsmm.Rd
@@ -28,10 +28,10 @@ a407ea1436a4f93ebda25093ec210f1d *man/mstep.norm.Rd
 f226f52cdc0ea5288ce0c8b1c1638c78 *man/mstep.pois.Rd
 229be13312c46788efcc43c142bdaf23 *man/plot.hsmm.Rd
 0f9243452f5e14deee62ede0cf71bc9f *man/plot.hsmm.data.Rd
-2921a19f1000ab68ccc2b2b6e3df9d17 *man/predict.hmm.Rd
+09805b9d4cdd6535b5ae335d20767d43 *man/predict.hmm.Rd
 a88cad16f239adaf6788ec05b6baa6dd *man/predict.hmmspec.Rd
-9a2bcc8a02e1456c37f3642be1d6998b *man/predict.hsmm.Rd
-ca141252e36428f02c95eac949be607f *man/predict.hsmmspec.Rd
+e6d1304a8f2468267f5416bbf5672fcb *man/predict.hsmm.Rd
+b869754841aac587c9df5bf45f2b3a9e *man/predict.hsmmspec.Rd
 82914e7e56db61d31f087d8f75b5c186 *man/print.hmm.Rd
 e08f47c205c716109d58e098d8744db7 *man/print.hmmspec.Rd
 ccab4fac60f3afb0a1a9c272b3e88558 *man/print.hsmmspec.Rd
@@ -50,6 +50,7 @@ f753be2eb3ba84bf008c16e8b34e399f *man/summary.hsmm.Rd
 fff829a1acc6913ea4cd8c4fe13f4763 *mhsmm-Ex.R
 79c12c7b0c235a6dd9fb9b5ca524714c *src/hsmm.c
 0bda7b22a09c822f7cd36278cce64c0e *vignettes/DHMM1.Rnw
+8aecb9990939e8524f074d52b6b67846 *vignettes/DHMM1.tex
 800a7e63854919f1b5e67cdd53604424 *vignettes/DHMM2.Rnw
 47ea3a8bde912ea241bf9423c021fcff *vignettes/clsX.RData
 2fbc0479e33515b6498327cc2b800549 *vignettes/fig/dhmm-008.eps
@@ -69,8 +70,8 @@ c9599583d7e67aa6e3fe07dfd950732e *vignettes/fig/dhmm-015.pdf
 2fbc0479e33515b6498327cc2b800549 *vignettes/fig/dhmm-018.eps
 ae004c6aa48d9264a08feba81f27d276 *vignettes/fig/dhmm-018.pdf
 c6b51ae9e5fdcc475ee420567d6a9252 *vignettes/fig/dhmm-clsfig1.eps
-a1dbdd6e61d154a3697466356af4090d *vignettes/fig/dhmm-clsfig1.pdf
+7ed4b31655d9c46cee9db9df845d45cd *vignettes/fig/dhmm-clsfig1.pdf
 ce4e5c9cc73bf84acf2d07b0660bbe0c *vignettes/fig/dhmm-clsfig2.eps
-f4f00ffba9e68d0bd00dfc94594ccc05 *vignettes/fig/dhmm-clsfig2.pdf
+76d6e4178597636afc9c6060b103f0ef *vignettes/fig/dhmm-clsfig2.pdf
 ac853baaa50b77a5d29f90cc09d9a0c6 *vignettes/fig/smooth-smooth1.eps
 efc88b2b26951773da6f87a286bf1c09 *vignettes/fig/smooth-smooth1.pdf
