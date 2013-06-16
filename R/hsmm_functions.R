@@ -118,7 +118,7 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,rand.emission=NULL,...)
     }
     else stop("Unknown sojourn distribution")
     
-    u = sapply(s0, fn)
+    u = as.integer(round(sapply(s0, fn)))
     s1 = rep(s0, u)[(left.truncate + 1):(sum(u) - right.truncate)]
     x = sapply(s1,function(i) rand.emission(i,object))
     if (NCOL(x) > 1)
@@ -142,9 +142,7 @@ simulate.hsmmspec <- function(object, nsim, seed=NULL,rand.emission=NULL,...)
   if(sojourn.distribution=="poisson") {
   	model$d = matrix(nrow=M,ncol=model$J)
   	for(i in 1:model$J) model$d[,i] = .dpois.hsmm.sojourn(1:M,model$sojourn$lambda[i],model$sojourn$shift[i])
-  }
-
-  if(sojourn.distribution=="gamma") {
+  } else  if(sojourn.distribution=="gamma") {
   	model$d = matrix(nrow=M,ncol=model$J)
   	for(i in 1:model$J) model$d[,i] = dgamma(1:M,model$sojourn$shape[i],scale=model$sojourn$scale[i])
   }
@@ -319,7 +317,7 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
   
   f=model$dens.emission
 
-  if(class(x)=="numeric" | class(x)=="integer") {
+  if(mode(x)=="numeric" | mode(x)=="integer") {
     warning('x is a primitive vector.  Assuming single sequence.')
     NN = NROW(x)    
   }
@@ -495,7 +493,7 @@ predict.hsmm <- function(object,newdata,method="viterbi",...) {
   else x=newdata
   J = object$J
   m=-1e300
-  if(class(x)=="numeric" | class(x)=="integer") {
+  if(mode(x)=="numeric" | mode(x)=="integer") {
   	warning('x is a primitive vector.  Assuming single sequence.')
   	x0 = x
   	N = NROW(x)

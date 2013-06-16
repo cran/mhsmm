@@ -79,7 +79,7 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
 {
   model = start.val
   K = nrow(model$trans)
-  if(class(x)=="numeric" | class(x)=="integer") {
+  if(mode(x)=="numeric" | mode(x)=="integer") {
     warning('x is a primitive vector.  Assuming single sequence.')
     N = NN = NROW(x)
   }
@@ -145,7 +145,7 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
 predict.hmm <- function(object,newdata,method="viterbi",...) {
   if(missing(newdata)) stop("no data passed to predict!")
   else x = newdata
-  if(class(x)=="numeric" | class(x)=="integer") {
+  if(mode(x)=="numeric" | mode(x)=="integer") {
   	warning('x is a primitive vector.  Assuming single sequence.')
   	N = NROW(x)
   	if(N<1) stop("N less than one")

@@ -177,6 +177,20 @@ start.np <- hsmmspec(init=rep(1/J,J),
 # mean(predicted$s!=train$s) ##misclassification rate
 
 
+#J <- 2
+#init <- c(1, 0)
+#P <- matrix(c(0, 1, 1, 0), nrow = J)
+#B <- list(mu = list(c(2, 3), c(3, 4)), sigma = list(matrix(c(4, 2, 2, 3), ncol = 2), diag(2)))
+#d <- list(shape = c(10, 25), scale = c(2, 2), type = "gamma")
+#model <- hsmmspec(init, P, parms.emis = B, sojourn = d, dens.emis = dmvnorm.hsmm)
+#train <- simulate(model, c(1000,100), seed = 123, rand.emis = rmvnorm.hsmm)
+
+#yhat <- predict(model, train)
+#mean(predict(model,train)$s==train$s)
+
+
+
+
 
 cleanEx()
 nameEx("mstep.mvnorm")
