@@ -118,6 +118,8 @@ hmmfit <- function(x,start.val,mstep=mstep.norm,lock.transition=FALSE,tol=1e-08,
   if(i>1)    if(abs(loglik[i]-loglik[i-1])<tol) break("Converged")
 #    if((loglik[i]-loglik[i-1])<(-tol)) stop(paste("loglikelihood has decreased on iteration",i))
     gam = matrix(test$gam,ncol=K)
+    if(any(colSums(gam)==0)) stop("Error: at least one state has an expected number of occurences equal to 0.\n This may be caused by bad starting parameters are insufficent sample size")
+
     if(length(formals(mstep))==2) {
       model$parms.emission = mstep(x,gam)
     }

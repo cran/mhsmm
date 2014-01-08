@@ -66,4 +66,8 @@
 2013-06-23 Jared O'Connell <jared@well.ox.ac.uk>  
 	* Version 0.4.11
 	* Minor bug fixes
-					
+2014-01-06 Jared O'Connell <jaredoconnell@gmail.com>
+	* Version 0.4.12
+	* Added more verbose error messages
+	* Minor bug fix
+	

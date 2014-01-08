@@ -69,11 +69,11 @@ hsmmspec <- function(init,transition,parms.emission,sojourn,dens.emission,rand.e
   if(is.null(dens.emission)) stop("dens.emission not specified")
   if(length(init)!=NROW(transition))    stop('length(init)!=NROW(transition)')
   if(NROW(transition)!=NCOL(transition)) stop('NROW(transition)!=NCOL(transition)')
-  if(!isTRUE(all.equal(sum(diag(matrix(c(0,.1,.4,.5,0,.6,.5,.9,0),nrow=3))),0))) stop('non-zero entry on diagonal of transition matrix')
   if(is.null(sojourn$type)) stop("Sojourn distribution type not specified.")
   if(all(sojourn$type!=c("nonparametric","gamma","poisson"))) stop(paste("Invalid sojourn type specified (",sojourn$type,")"))
   ans = list(J=length(init),init=init,transition=transition,parms.emission=parms.emission,sojourn=sojourn,rand.emission=rand.emission,dens.emission=dens.emission,mstep=mstep)
   class(ans) <- 'hsmmspec'
+  .check.hsmmspec(ans)
   ans  
 }
 
@@ -376,7 +376,9 @@ hsmmfit <- function(x,model,mstep=NULL,M=NA,maxit=100,lock.transition=FALSE,lock
 #     if(any(apply(matrix(B$gamma,ncol=J),2,function(gamma) all(gamma==0)))) stop("all negative gamma detected.  Exiting...")
      old.model = new.model
 #     new.model = list(parms.emission=mstep(x,matrix(B$gamma,ncol=J)))
-    new.model$parms.emission = mstep(x,matrix(B$gamma,ncol=J))
+    state_wt <- matrix(B$gamma,ncol=J)
+    if(any(colSums(state_wt)==0)) stop("Error: at least one state has an expected number of occurences equal to 0.\n This may be caused by bad starting parameters are insufficent sample size")
+    new.model$parms.emission = mstep(x,state_wt)
 
     if(lock.d) {
       new.model$d = old.model$d
