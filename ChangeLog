@@ -90,3 +90,7 @@
 	* fixed a minor bug where estimated non-parametric sojourn distribution was not propagated in hsmmfit output
 	* version 0.4.15
 
+2023-08-22 Jared O'Connell <jaredoconnell@gmail.com>
+	* switched to UTF-8
+	* version 0.4.20
+	* fixed various minor warnings

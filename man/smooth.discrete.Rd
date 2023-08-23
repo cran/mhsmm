@@ -62,7 +62,7 @@ smooth.discrete(y, init = NULL, trans = NULL, parms.emission = 0.5,
 %\references{  
 %}
 \author{
-  Søren Højsgaard <sorenh at agrsci.dk>
+  S<c3><b8>ren H<c3><b8>jsgaard <sorenh at math.aau.dk>
 }
 %\note{
 %%  ~~further notes~~

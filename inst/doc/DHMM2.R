@@ -1,14 +1,14 @@
 ### R code from vignette source 'DHMM2.Rnw'
-### Encoding: UTF-8
+### Encoding: NA
 
 ###################################################
-### code chunk number 1: DHMM2.Rnw:28-29
+### code chunk number 1: DHMM2.Rnw:27-28
 ###################################################
 options("width"=80)
 
 
 ###################################################
-### code chunk number 2: DHMM2.Rnw:51-55
+### code chunk number 2: DHMM2.Rnw:50-54
 ###################################################
 load("clsX.RData")
 length(cls0)
@@ -24,13 +24,13 @@ addStates(cls0[1:2000])
 
 
 ###################################################
-### code chunk number 4: DHMM2.Rnw:75-76
+### code chunk number 4: DHMM2.Rnw:74-75
 ###################################################
 dpmf <- function(x,j,model) model$parms.emission$pmf[j,x]
 
 
 ###################################################
-### code chunk number 5: DHMM2.Rnw:83-90
+### code chunk number 5: DHMM2.Rnw:82-89
 ###################################################
 J <- 2
 init <- c(.5,.5)
@@ -42,7 +42,7 @@ init.spec
 
 
 ###################################################
-### code chunk number 6: DHMM2.Rnw:97-104
+### code chunk number 6: DHMM2.Rnw:96-103
 ###################################################
 mstep.pmf <- function(x,wt) {
   ans <- matrix(ncol=ncol(wt),nrow=ncol(wt))
@@ -54,7 +54,7 @@ mstep.pmf <- function(x,wt) {
 
 
 ###################################################
-### code chunk number 7: DHMM2.Rnw:112-115
+### code chunk number 7: DHMM2.Rnw:111-114
 ###################################################
 samp <- 1:2640
 train <- list(s=cls0[samp], x=cls1[samp], N=length(cls0[samp]))
@@ -62,26 +62,26 @@ valid <- list(x=cls1[-samp], N=length(cls1[-samp]))
 
 
 ###################################################
-### code chunk number 8: DHMM2.Rnw:120-122
+### code chunk number 8: DHMM2.Rnw:119-121
 ###################################################
 hmm.obj <- hmmfit(train, init.spec,mstep=mstep.pmf)
 summary(hmm.obj)
 
 
 ###################################################
-### code chunk number 9: DHMM2.Rnw:131-132
+### code chunk number 9: DHMM2.Rnw:130-131
 ###################################################
 vit <- predict(hmm.obj, valid)
 
 
 ###################################################
-### code chunk number 10: DHMM2.Rnw:137-138
+### code chunk number 10: DHMM2.Rnw:136-137
 ###################################################
 smo <- predict(hmm.obj, valid, method="smoothed")
 
 
 ###################################################
-### code chunk number 11: DHMM2.Rnw:143-151
+### code chunk number 11: DHMM2.Rnw:142-150
 ###################################################
 normtab <- function(tt) round(sweep(tt,1,rowSums(tt),"/"),2)
 SS <- cls0[-samp]

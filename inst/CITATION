@@ -1,15 +1,16 @@
 citHeader("To cite mhsmm in publications use:")
 
-citEntry(entry = "Article",
+bibentry(
+  bibtype = "Article",
   title        = "Hidden Semi Markov Models for Multiple Observation Sequences: The {mhsmm} Package for {R}",
-  author       = personList(as.person("Jared O'Connell"),
-                   as.person("Søren Højsgaard")),
+  author       = c(as.person("Jared O'Connell"),
+                   as.person("SÃ¸ren HÃ¸jsgaard")),
   journal      = "Journal of Statistical Software",
   year         = "2011",
   volume       = "39",
   number       = "4",
   pages        = "1--22",
-  url          = "http://www.jstatsoft.org/v39/i04/",
+  url          = "https://doi.org/10.18637/jss.v039.i04",
 
   textVersion  =
   paste("Jared O'Connell, Soren Hojsgaard (2011).",
